@@ -72,9 +72,6 @@ p{margin:0}
 .nav-links a{color:var(--muted);text-decoration:none;transition:color .2s}
 .nav-links a:hover,.nav-links a.on{color:var(--gold)}
 .nav-tools{display:flex;align-items:center;gap:10px}
-.lang{display:flex;border:1px solid var(--dusk-2);border-radius:999px;overflow:hidden}
-.lang button{background:none;border:0;color:var(--muted);font:600 .78rem var(--f-hud);padding:6px 10px;cursor:pointer;letter-spacing:.08em}
-.lang button[aria-pressed="true"]{background:var(--gold);color:var(--ink)}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--f-display);font-size:.95rem;letter-spacing:.02em;text-decoration:none;border-radius:var(--radius);padding:12px 20px;border:2px solid transparent;cursor:pointer;transition:transform .15s ease,background .15s ease,box-shadow .15s;white-space:nowrap}
 .btn:hover{transform:translateY(-2px)}
 .btn-gold{background:var(--gold);color:var(--ink);box-shadow:0 4px 0 #b88a00}
@@ -83,7 +80,7 @@ p{margin:0}
 .btn-ghost:hover{border-color:var(--gold)}
 .btn-sm{padding:8px 14px;font-size:.8rem}
 @media (max-width:860px){.nav-links{display:none}.nav-tools{margin-left:auto}}
-@media (max-width:420px){.brand span{display:none}.nav .btn-sm{display:none}}
+@media (max-width:420px){.brand span{display:none}}
 
 /* ---------- HERO (loading screen) ---------- */
 .hero{position:relative;overflow:hidden;isolation:isolate;border-bottom:4px solid var(--gold)}
@@ -494,19 +491,15 @@ footer .wrap{display:grid;gap:22px}
   <div class="wrap">
     <a class="brand" href="#top"><img src="assets/logo-192.png" alt="" width="40" height="40"><span>$MTA</span></a>
     <div class="nav-links">
-      <a href="#coup" data-i18n="nav.coup">Le coup</a>
-      <a href="#gang" data-i18n="nav.gang">Le gang</a>
-      <a href="#videos" data-i18n="nav.vids">Vidéos</a>
-      <a href="#buy" data-i18n="nav.buy">Acheter</a>
+      <a href="#coup" data-i18n="nav.coup">The job</a>
+      <a href="#gang" data-i18n="nav.gang">The crew</a>
+      <a href="#videos" data-i18n="nav.vids">Videos</a>
+      <a href="#buy" data-i18n="nav.buy">Buy</a>
       <a href="#missions" data-i18n="nav.missions">Missions</a>
-      <a href="#jeu" data-i18n="nav.game">Le braquage</a>
+      <a href="#jeu" data-i18n="nav.game">The heist</a>
     </div>
     <div class="nav-tools">
-      <div class="lang" role="group" aria-label="Language">
-        <button type="button" id="lang-fr" data-lang="fr" aria-pressed="true">FR</button>
-        <button type="button" id="lang-en" data-lang="en" aria-pressed="false">EN</button>
-      </div>
-      <a class="btn btn-gold btn-sm" id="nav-buy" href="#buy" data-i18n="cta.buy">Acheter $MTA</a>
+      <a class="btn btn-gold btn-sm" id="nav-buy" href="#buy" data-i18n="cta.buy">Buy $MTA</a>
     </div>
   </div>
   <div class="progress" id="progress"></div>
@@ -527,36 +520,36 @@ footer .wrap{display:grid;gap:22px}
         <span class="chip">19.11.2026</span>
         <span class="chip" data-i18n="chip.fair">Fair launch</span>
       </div>
-      <h1 data-i18n-html="hero.title">Le casse de l'année commence le <em>19.11</em></h1>
-      <p class="lede" data-i18n="hero.lede">Trois légendes du memecoin, un gang, un seul objectif : faire sauter la banque le jour où toute la planète gaming sera devant son écran.</p>
+      <h1 data-i18n-html="hero.title">The heist of the year starts <em>19.11</em></h1>
+      <p class="lede" data-i18n="hero.lede">Three memecoin legends, one crew, one goal: rob the bank on the day the whole gaming world is glued to its screen.</p>
       <div>
         <div class="countdown" id="countdown" aria-live="off">
-          <div class="cd-cell"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl" data-i18n="cd.d">Jours</span></div>
-          <div class="cd-cell"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl" data-i18n="cd.h">Heures</span></div>
+          <div class="cd-cell"><span class="cd-num" id="cd-d">--</span><span class="cd-lbl" data-i18n="cd.d">Days</span></div>
+          <div class="cd-cell"><span class="cd-num" id="cd-h">--</span><span class="cd-lbl" data-i18n="cd.h">Hours</span></div>
           <div class="cd-cell"><span class="cd-num" id="cd-m">--</span><span class="cd-lbl" data-i18n="cd.m">Min</span></div>
           <div class="cd-cell"><span class="cd-num" id="cd-s">--</span><span class="cd-lbl" data-i18n="cd.s">Sec</span></div>
         </div>
-        <p class="cd-note" id="cd-note">Heure exacte du lancement annoncée sur X.</p>
+        <p class="cd-note" id="cd-note">Exact launch time will be announced on X.</p>
       </div>
       <div class="ca">
-        <span class="ca-label" data-i18n="ca.label">Contrat</span>
-        <span class="ca-value" id="ca-value" data-i18n="ca.soon">Dévoilé au lancement, uniquement ici et sur X</span>
-        <button class="btn btn-gold btn-sm" type="button" id="ca-copy" disabled data-i18n="ca.copy">Copier</button>
+        <span class="ca-label" data-i18n="ca.label">Contract</span>
+        <span class="ca-value" id="ca-value" data-i18n="ca.soon">Revealed at launch, only here and on X</span>
+        <button class="btn btn-gold btn-sm" type="button" id="ca-copy" disabled data-i18n="ca.copy">Copy</button>
       </div>
       <div class="cta-row">
-        <a class="btn btn-gold" href="#buy" data-i18n="cta.how">Comment acheter</a>
-        <a class="btn btn-ghost" href="#jeu" data-i18n="cta.play">Jouer au braquage</a>
+        <a class="btn btn-gold" href="#buy" data-i18n="cta.how">How to buy</a>
+        <a class="btn btn-ghost" href="#jeu" data-i18n="cta.play">Play the heist</a>
       </div>
     </div>
     <div class="lineup" id="lineup">
-      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Pumpchi</b><small data-i18n="p1.role"></small><em>★★★★<s>★</s></em></span><img src="assets/sprite-pumpchi.webp" alt="Pumpchi" width="357" height="900"><span class="tag">Pumpchi</span></div>
-      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Tall-JR</b><small data-i18n="p3.role"></small><em>★★★★★</em></span><img src="assets/sprite-talljr.webp" alt="Tall-JR" width="305" height="900"><span class="tag">Tall-JR</span></div>
-      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Pengie</b><small data-i18n="p2.role"></small><em>★★★<s>★★</s></em></span><img src="assets/sprite-pengie.webp" alt="Pengie" width="367" height="900"><span class="tag">Pengie</span></div>
+      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Pumpchi</b><small data-i18n="p1.role">The brains</small><em>★★★★<s>★</s></em></span><img src="assets/sprite-pumpchi.webp" alt="Pumpchi" width="357" height="900"><span class="tag">Pumpchi</span></div>
+      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Tall-JR</b><small data-i18n="p3.role">The wheelman</small><em>★★★★★</em></span><img src="assets/sprite-talljr.webp" alt="Tall-JR" width="305" height="900"><span class="tag">Tall-JR</span></div>
+      <div class="suspect" tabindex="0" data-go="gang"><span class="sel-card"><b>Pengie</b><small data-i18n="p2.role">The bagman</small><em>★★★<s>★★</s></em></span><img src="assets/sprite-pengie.webp" alt="Pengie" width="367" height="900"><span class="tag">Pengie</span></div>
     </div>
   </div>
   <div class="loadbar">
     <div class="wrap">
-      <p class="tip"><b data-i18n="tip.label">Astuce</b><span id="tip-text">Tall-JR fait 1,95 m. Discret, il ne l'est pas.</span></p>
+      <p class="tip"><b data-i18n="tip.label">Tip</b><span id="tip-text">Tall-JR fait 1,95 m. Discret, il ne l'est pas.</span></p>
       <div class="bar" aria-hidden="true"><i id="bar-fill"></i></div>
       <span class="bar-pct" id="bar-pct" aria-hidden="true">0%</span>
     </div>
@@ -566,13 +559,13 @@ footer .wrap{display:grid;gap:22px}
 <main>
   <section id="live" hidden aria-labelledby="live-title">
     <div class="wrap">
-      <div class="live-head"><span class="live-dot">LIVE</span><h2 id="live-title" data-i18n="live.title">Le casse en direct</h2></div>
+      <div class="live-head"><span class="live-dot">LIVE</span><h2 id="live-title" data-i18n="live.title">The heist, live</h2></div>
       <div class="live-stats">
-        <div class="stat"><small data-i18n="live.price">Prix</small><b id="ls-price">—</b></div>
+        <div class="stat"><small data-i18n="live.price">Price</small><b id="ls-price">—</b></div>
         <div class="stat"><small>Market cap</small><b id="ls-mcap">—</b></div>
-        <div class="stat"><small data-i18n="live.vol">Volume 24 h</small><b id="ls-vol">—</b></div>
-        <div class="stat"><small data-i18n="live.liq">Liquidité</small><b id="ls-liq">—</b></div>
-        <div class="stat"><small data-i18n="live.chg">Variation 24 h</small><b id="ls-chg">—</b></div>
+        <div class="stat"><small data-i18n="live.vol">24h volume</small><b id="ls-vol">—</b></div>
+        <div class="stat"><small data-i18n="live.liq">Liquidity</small><b id="ls-liq">—</b></div>
+        <div class="stat"><small data-i18n="live.chg">24h change</small><b id="ls-chg">—</b></div>
       </div>
       <div class="chart-frame" id="chart-frame"></div>
     </div>
@@ -584,14 +577,14 @@ footer .wrap{display:grid;gap:22px}
       <img class="pitch-logo rv zoom" src="assets/logo.webp" alt="" width="720" height="720" loading="lazy">
       <div>
         <div class="sec-head rv">
-          <span class="hud" data-i18n="coup.eyebrow">Le coup</span>
-          <h2 data-i18n="coup.title">$MTA, c'est quoi ?</h2>
-          <p data-i18n="coup.lede">Memes Theft Auto est un memecoin parodique sur Solana. On a pris l'esthétique des jeux de braquage en monde ouvert, trois figures bien connues du memecoin, et on en a fait un gang.</p>
+          <span class="hud" data-i18n="coup.eyebrow">The job</span>
+          <h2 data-i18n="coup.title">What is $MTA?</h2>
+          <p data-i18n="coup.lede">Memes Theft Auto is a parody memecoin on Solana. We took the look of open-world heist games, three well-known memecoin figures, and turned them into a crew.</p>
         </div>
         <div class="facts">
-          <div class="fact rv from-left" style="--d:.05s"><span class="k" data-i18n="coup.k1">Le gang</span><div><h3 data-i18n="coup.h1">Trois braqueurs, trois styles</h3><p data-i18n="coup.p1">Pumpchi le cerveau, Pengie le logisticien, Tall-JR le chauffeur. Chacun a sa fiche, son 360 et ses vidéos.</p></div></div>
-          <div class="fact rv from-left" style="--d:.15s"><span class="k" data-i18n="coup.k2">Le timing</span><div><h3 data-i18n="coup.h2">Lancement le 19.11.2026</h3><p data-i18n="coup.p2">Le jour de sortie du jeu le plus attendu de la décennie. Toute la planète gaming regarde, le gang passe à l'action.</p></div></div>
-          <div class="fact rv from-left" style="--d:.25s"><span class="k" data-i18n="coup.k3">Le deal</span><div><h3 data-i18n="coup.h3">Fair launch</h3><p data-i18n="coup.p3">Aucun token réservé à l'équipe, pas de taxe, pas de presale. Le dev achète au lancement, au même prix que tout le monde, et c'est visible on-chain.</p></div></div>
+          <div class="fact rv from-left" style="--d:.05s"><span class="k" data-i18n="coup.k1">The crew</span><div><h3 data-i18n="coup.h1">Three robbers, three styles</h3><p data-i18n="coup.p1">Pumpchi the brains, Pengie the bagman, Tall-JR the wheelman. Each has his own file, 360 and videos.</p></div></div>
+          <div class="fact rv from-left" style="--d:.15s"><span class="k" data-i18n="coup.k2">The timing</span><div><h3 data-i18n="coup.h2">Launch on 19.11.2026</h3><p data-i18n="coup.p2">Release day of the most anticipated game of the decade. The whole gaming world is watching, so the crew makes its move.</p></div></div>
+          <div class="fact rv from-left" style="--d:.25s"><span class="k" data-i18n="coup.k3">The deal</span><div><h3 data-i18n="coup.h3">Fair launch</h3><p data-i18n="coup.p3">No tokens set aside for the team, no tax, no presale. The dev buys at launch at the same price as everyone, and it is visible on-chain.</p></div></div>
         </div>
       </div>
     </div>
@@ -602,51 +595,51 @@ footer .wrap{display:grid;gap:22px}
     <div class="band-veil" style="background:linear-gradient(180deg,var(--night) 0%,rgba(21,10,34,.55) 22%,rgba(21,10,34,.78) 60%,var(--night) 100%)"></div>
     <div class="wrap">
       <div class="sec-head rv">
-        <span class="hud" data-i18n="gang.eyebrow">Fiches suspects</span>
-        <h2 data-i18n="gang.title">Le gang</h2>
-        <p data-i18n="gang.lede">Recherchés dans tout l'État. Si vous les croisez, ne les approchez pas : ils vont vous parler de leur bag.</p>
+        <span class="hud" data-i18n="gang.eyebrow">Suspect files</span>
+        <h2 data-i18n="gang.title">The crew</h2>
+        <p data-i18n="gang.lede">Wanted statewide. If you see them, don't approach: they'll talk your ear off about their bags.</p>
       </div>
       <div class="gang">
         <article class="file rv" style="--d:0s">
-          <div class="file-top"><span><span data-i18n="gang.file">Fiche n°</span> 001</span><span class="stars" aria-label="4/5">★★★★<span class="off">★</span></span></div>
+          <div class="file-top"><span><span data-i18n="gang.file">File no.</span> 001</span><span class="stars" aria-label="4/5">★★★★<span class="off">★</span></span></div>
           <div class="shot">
             <video src="assets/spin-pumpchi.mp4" poster="assets/poster-pumpchi.jpg" muted loop playsinline preload="metadata" aria-label="Pumpchi 360"></video>
-            <div class="ruler"></div><span class="h" data-i18n="p1.h">1,75 m</span><span class="stamp">WANTED</span>
+            <div class="ruler"></div><span class="h" data-i18n="p1.h">5'9"</span><span class="stamp">WANTED</span>
           </div>
-          <div><h3>Pumpchi</h3><p class="role" data-i18n="p1.role">Le cerveau</p></div>
-          <p class="bio" data-i18n="p1.bio">Il repère les coups avant tout le monde, entre au premier bloc et ressort avant la fin du film. Personne ne l'a jamais vu paniquer.</p>
+          <div><h3>Pumpchi</h3><p class="role" data-i18n="p1.role">The brains</p></div>
+          <p class="bio" data-i18n="p1.bio">He spots the job before anyone else, gets in on the first block and leaves before the credits roll. Nobody has ever seen him panic.</p>
           <dl>
-            <dt data-i18n="f.sign">Signe distinctif</dt><dd data-i18n="p1.sign">Pilule verte dans le dos</dd>
-            <dt data-i18n="f.skill">Spécialité</dt><dd data-i18n="p1.skill">Entrer tôt, sortir propre</dd>
-            <dt data-i18n="f.last">Vu pour la dernière fois</dt><dd data-i18n="p1.last">En jet privé, au téléphone</dd>
+            <dt data-i18n="f.sign">Distinctive mark</dt><dd data-i18n="p1.sign">Green pill on his back</dd>
+            <dt data-i18n="f.skill">Speciality</dt><dd data-i18n="p1.skill">In early, out clean</dd>
+            <dt data-i18n="f.last">Last seen</dt><dd data-i18n="p1.last">On a private jet, on the phone</dd>
           </dl>
         </article>
         <article class="file rv" style="--d:.12s">
-          <div class="file-top"><span><span data-i18n="gang.file">Fiche n°</span> 002</span><span class="stars" aria-label="3/5">★★★<span class="off">★★</span></span></div>
+          <div class="file-top"><span><span data-i18n="gang.file">File no.</span> 002</span><span class="stars" aria-label="3/5">★★★<span class="off">★★</span></span></div>
           <div class="shot">
             <video src="assets/spin-pengie.mp4" poster="assets/poster-pengie.jpg" muted loop playsinline preload="metadata" aria-label="Pengie 360"></video>
-            <div class="ruler"></div><span class="h" data-i18n="p2.h">1,78 m</span><span class="stamp">WANTED</span>
+            <div class="ruler"></div><span class="h" data-i18n="p2.h">5'10"</span><span class="stamp">WANTED</span>
           </div>
-          <div><h3>Pengie</h3><p class="role" data-i18n="p2.role">Le logisticien</p></div>
-          <p class="bio" data-i18n="p2.bio">Tout le butin finit dans son sac pingouin orange. Personne ne sait ce qu'il y a dedans, pas même lui. Il n'enlève jamais ses lunettes.</p>
+          <div><h3>Pengie</h3><p class="role" data-i18n="p2.role">The bagman</p></div>
+          <p class="bio" data-i18n="p2.bio">Every bit of loot ends up in his orange penguin backpack. Nobody knows what's inside, not even him. He never takes his glasses off.</p>
           <dl>
-            <dt data-i18n="f.sign">Signe distinctif</dt><dd data-i18n="p2.sign">Sac à dos pingouin orange</dd>
-            <dt data-i18n="f.skill">Spécialité</dt><dd data-i18n="p2.skill">Ramasser tout ce qui traîne</dd>
-            <dt data-i18n="f.last">Vu pour la dernière fois</dt><dd data-i18n="p2.last">Devant une supercar orange, sur son téléphone</dd>
+            <dt data-i18n="f.sign">Distinctive mark</dt><dd data-i18n="p2.sign">Orange penguin backpack</dd>
+            <dt data-i18n="f.skill">Speciality</dt><dd data-i18n="p2.skill">Picking up everything lying around</dd>
+            <dt data-i18n="f.last">Last seen</dt><dd data-i18n="p2.last">Next to an orange supercar, on his phone</dd>
           </dl>
         </article>
         <article class="file rv" style="--d:.24s">
-          <div class="file-top"><span><span data-i18n="gang.file">Fiche n°</span> 003</span><span class="stars" aria-label="5/5">★★★★★</span></div>
+          <div class="file-top"><span><span data-i18n="gang.file">File no.</span> 003</span><span class="stars" aria-label="5/5">★★★★★</span></div>
           <div class="shot">
             <video src="assets/spin-talljr.mp4" poster="assets/poster-talljr.jpg" muted loop playsinline preload="metadata" aria-label="Tall-JR 360"></video>
-            <div class="ruler"></div><span class="h" data-i18n="p3.h">1,95 m</span><span class="stamp">WANTED</span>
+            <div class="ruler"></div><span class="h" data-i18n="p3.h">6'5"</span><span class="stamp">WANTED</span>
           </div>
-          <div><h3>Tall-JR</h3><p class="role" data-i18n="p3.role">Le chauffeur</p></div>
-          <p class="bio" data-i18n="p3.bio">1,95 m, clé de Kingsegg en main. Il démarre avant que l'alarme sonne et on le voit arriver de très loin. Discret, il ne l'a jamais été.</p>
+          <div><h3>Tall-JR</h3><p class="role" data-i18n="p3.role">The wheelman</p></div>
+          <p class="bio" data-i18n="p3.bio">6'5", Kingsegg key in hand. He starts the engine before the alarm goes off and you can see him coming from miles away. Low profile was never an option.</p>
           <dl>
-            <dt data-i18n="f.sign">Signe distinctif</dt><dd data-i18n="p3.sign">Clé Kingsegg, chaînes en argent</dd>
-            <dt data-i18n="f.skill">Spécialité</dt><dd data-i18n="p3.skill">La fuite à 400 km/h</dd>
-            <dt data-i18n="f.last">Vu pour la dernière fois</dt><dd data-i18n="p3.last">Dans une piscine à débordement</dd>
+            <dt data-i18n="f.sign">Distinctive mark</dt><dd data-i18n="p3.sign">Kingsegg key, silver chains</dd>
+            <dt data-i18n="f.skill">Speciality</dt><dd data-i18n="p3.skill">Getaways at 250 mph</dd>
+            <dt data-i18n="f.last">Last seen</dt><dd data-i18n="p3.last">In an infinity pool</dd>
           </dl>
         </article>
       </div>
@@ -659,34 +652,34 @@ footer .wrap{display:grid;gap:22px}
     <div class="band-veil"></div>
     <div class="wrap enemy">
       <article class="file foe rv zoom">
-        <div class="file-top"><span><span data-i18n="foe.file">Cible n°</span> 000</span><span class="foe-tag" data-i18n="foe.level">Rug level max</span></div>
+        <div class="file-top"><span><span data-i18n="foe.file">Target no.</span> 000</span><span class="foe-tag" data-i18n="foe.level">Max rug level</span></div>
         <div class="shot">
           <video src="assets/clip-rugsy.mp4" poster="assets/poster-rugsy.jpg" muted loop playsinline preload="metadata" aria-label="Rugsy Jack"></video>
-          <span class="stamp" data-i18n="foe.stamp">À récupérer</span>
+          <span class="stamp" data-i18n="foe.stamp">To collect</span>
         </div>
-        <div><h3>Rugsy Jack</h3><p class="role" data-i18n="foe.role">Le rugger</p></div>
+        <div><h3>Rugsy Jack</h3><p class="role" data-i18n="foe.role">The rugger</p></div>
         <dl>
-          <dt data-i18n="f.sign">Signe distinctif</dt><dd data-i18n="foe.sign">Sweat bleu « TRUST ME BRO »</dd>
-          <dt data-i18n="f.skill">Spécialité</dt><dd data-i18n="foe.skill">Partir avec la liquidité</dd>
-          <dt data-i18n="f.last">Vu pour la dernière fois</dt><dd data-i18n="foe.last">En train de bloquer sa porte d'entrée</dd>
+          <dt data-i18n="f.sign">Distinctive mark</dt><dd data-i18n="foe.sign">Blue "TRUST ME BRO" sweatshirt</dd>
+          <dt data-i18n="f.skill">Speciality</dt><dd data-i18n="foe.skill">Leaving with the liquidity</dd>
+          <dt data-i18n="f.last">Last seen</dt><dd data-i18n="foe.last">Holding his front door shut</dd>
         </dl>
       </article>
       <div class="enemy-copy">
         <div class="sec-head rv">
-          <span class="hud" data-i18n="foe.eyebrow">L'ennemi du gang</span>
+          <span class="hud" data-i18n="foe.eyebrow">The crew's enemy</span>
           <h2>Rugsy Jack</h2>
-          <p data-i18n="foe.lede">Il a promis la lune à tout le monde, puis il est parti avec la caisse. La police ne le cherche pas. Le gang, si : ils sont passés chez lui récupérer ce qu'il a volé.</p>
+          <p data-i18n="foe.lede">He promised everyone the moon, then left with the cash. The police aren't looking for him. The crew is: they paid him a visit to collect what he stole.</p>
         </div>
-        <p class="not-police rv"><s data-i18n="foe.np1">Ennemi public</s> <b data-i18n="foe.np2">Ennemi du gang</b></p>
-        <blockquote class="foe-quote rv"><span data-i18n="foe.quote">« Les rugs ne sont pas acceptés dans notre ville. »</span><cite data-i18n="foe.cite">Le gang $MTA</cite></blockquote>
+        <p class="not-police rv"><s data-i18n="foe.np1">Public enemy</s> <b data-i18n="foe.np2">Enemy of the crew</b></p>
+        <blockquote class="foe-quote rv"><span data-i18n="foe.quote">"Rugs are not accepted in our city."</span><cite data-i18n="foe.cite">The $MTA crew</cite></blockquote>
         <div class="hunters rv">
-          <span class="hud" data-i18n="foe.hunted">Sur ses traces</span>
+          <span class="hud" data-i18n="foe.hunted">On his trail</span>
           <ul>
             <li><img src="assets/sprite-pumpchi.webp" alt="Pumpchi" loading="lazy"></li>
             <li><img src="assets/sprite-pengie.webp" alt="Pengie" loading="lazy"></li>
             <li><img src="assets/sprite-talljr.webp" alt="Tall-JR" loading="lazy"></li>
           </ul>
-          <a class="btn btn-ghost btn-sm" href="#videos" data-clip="collection" data-i18n="foe.watch">Voir la récupération ▶</a>
+          <a class="btn btn-ghost btn-sm" href="#videos" data-clip="collection" data-i18n="foe.watch">Watch the collection ▶</a>
         </div>
       </div>
     </div>
@@ -696,9 +689,9 @@ footer .wrap{display:grid;gap:22px}
     <div class="wrap">
       <div class="reel-head">
         <div class="sec-head rv">
-          <span class="hud" data-i18n="v.eyebrow">Images de surveillance</span>
-          <h2 data-i18n="v.title">Les vidéos</h2>
-          <p data-i18n="v.lede">Le trailer, les fiches suspects, les flashs info et les coulisses du casse. Monte le son.</p>
+          <span class="hud" data-i18n="v.eyebrow">Surveillance footage</span>
+          <h2 data-i18n="v.title">The videos</h2>
+          <p data-i18n="v.lede">The trailer, the suspect files, the news flashes and the making of the heist. Turn the sound up.</p>
         </div>
         <div class="reel-nav"><button type="button" id="reel-prev" aria-label="Previous">◀</button><button type="button" id="reel-next" aria-label="Next">▶</button></div>
       </div>
@@ -709,52 +702,52 @@ footer .wrap{display:grid;gap:22px}
   <section class="block" id="buy">
     <div class="wrap">
       <div class="sec-head rv">
-        <span class="hud" data-i18n="buy.eyebrow">Rejoindre le casse</span>
-        <h2 data-i18n="buy.title">Comment acheter $MTA</h2>
-        <p data-i18n="buy.lede">Quatre étapes, quelques minutes. Prépare tout avant le 19.11 pour entrer dans la banque dès l'ouverture.</p>
+        <span class="hud" data-i18n="buy.eyebrow">Join the heist</span>
+        <h2 data-i18n="buy.title">How to buy $MTA</h2>
+        <p data-i18n="buy.lede">Four steps, a few minutes. Get set up before 19.11 so you walk into the bank as soon as it opens.</p>
       </div>
       <div class="buy-grid">
         <div>
           <ol class="steps">
-            <li class="rv from-left" style="--d:0s"><div><h3 data-i18n="s1.h">Installe Phantom</h3><p data-i18n-html="s1.p">Télécharge le wallet <a href="https://phantom.com" target="_blank" rel="noopener">Phantom</a> (ou Solflare) sur ton téléphone ou en extension de navigateur. Note ta phrase secrète sur papier et ne la partage jamais.</p></div></li>
-            <li class="rv from-left" style="--d:.1s"><div><h3 data-i18n="s2.h">Récupère des SOL</h3><p data-i18n="s2.p">Achète des SOL directement dans Phantom ou sur un exchange, puis envoie-les vers ton wallet. Garde un peu de SOL pour les frais.</p></div></li>
-            <li class="rv from-left" style="--d:.2s"><div><h3 data-i18n="s3.h">Copie l'adresse officielle</h3><p data-i18n="s3.p">Le jour J, l'adresse du contrat $MTA apparaît en haut de cette page et sur notre X. Copie-la uniquement depuis ces deux endroits.</p></div></li>
-            <li class="rv from-left" style="--d:.3s"><div><h3 data-i18n="s4.h">Swap SOL → $MTA</h3><p data-i18n-html="s4.p">Colle l'adresse sur <a href="https://jup.ag" target="_blank" rel="noopener">Jupiter</a>, choisis ton montant et valide. Bienvenue dans le gang.</p></div></li>
+            <li class="rv from-left" style="--d:0s"><div><h3 data-i18n="s1.h">Install Phantom</h3><p data-i18n-html="s1.p">Download the <a href="https://phantom.com" target="_blank" rel="noopener">Phantom</a> wallet (or Solflare) on your phone or as a browser extension. Write your secret phrase on paper and never share it.</p></div></li>
+            <li class="rv from-left" style="--d:.1s"><div><h3 data-i18n="s2.h">Get some SOL</h3><p data-i18n="s2.p">Buy SOL right inside Phantom or on an exchange, then send it to your wallet. Keep a little SOL for fees.</p></div></li>
+            <li class="rv from-left" style="--d:.2s"><div><h3 data-i18n="s3.h">Copy the official address</h3><p data-i18n="s3.p">On launch day, the $MTA contract address appears at the top of this page and on our X. Only copy it from those two places.</p></div></li>
+            <li class="rv from-left" style="--d:.3s"><div><h3 data-i18n="s4.h">Swap SOL → $MTA</h3><p data-i18n-html="s4.p">Paste the address on <a href="https://jup.ag" target="_blank" rel="noopener">Jupiter</a>, pick your amount and confirm. Welcome to the crew.</p></div></li>
           </ol>
-          <p class="warn rv" data-i18n="buy.warn">Méfie-toi des faux tokens : n'importe qui peut créer un « MTA ». Si l'adresse ne vient pas de ce site ou de notre X, ce n'est pas nous.</p>
+          <p class="warn rv" data-i18n="buy.warn">Watch out for fake tokens: anyone can create an "MTA". If the address doesn't come from this site or our X, it isn't us.</p>
         </div>
         <aside class="tok rv zoom" id="tok" aria-labelledby="tok-title">
-          <div><span class="tok-sub" data-i18n="tok.eyebrow">Tokenomics</span><h3 id="tok-title" data-i18n="tok.title">Le partage du butin</h3></div>
-          <div><div class="tok-big" id="tok-big">1,000,000,000</div><span class="tok-sub" data-i18n="tok.supply">$MTA, supply totale</span></div>
+          <div><span class="tok-sub" data-i18n="tok.eyebrow">Tokenomics</span><h3 id="tok-title" data-i18n="tok.title">Splitting the loot</h3></div>
+          <div><div class="tok-big" id="tok-big">1,000,000,000</div><span class="tok-sub" data-i18n="tok.supply">$MTA, total supply</span></div>
           <div>
             <div class="tok-track"><div class="tok-bar" role="img" aria-label="100%"></div></div>
-            <div class="tok-legend"><span data-i18n="tok.community">En vente publique</span><span>100 %</span></div>
+            <div class="tok-legend"><span data-i18n="tok.community">Sold publicly</span><span>100 %</span></div>
           </div>
           <div class="tok-rows">
-            <div><span data-i18n="tok.r1">Tokens réservés à l'équipe</span><b data-i18n="tok.none">Aucun</b></div>
-            <div><span data-i18n="tok.dev">Dev buy au lancement</span><b id="tok-dev" data-i18n="tok.devsoon">Annoncé au lancement</b></div>
-            <div><span data-i18n="tok.r2">Taxe achat / vente</span><b>0 / 0</b></div>
-            <div><span data-i18n="tok.r3">Presale</span><b data-i18n="tok.none">Aucune</b></div>
-            <div><span data-i18n="tok.r4">Lancement</span><b data-i18n="tok.fair">Fair launch</b></div>
+            <div><span data-i18n="tok.r1">Tokens set aside for the team</span><b data-i18n="tok.none">None</b></div>
+            <div><span data-i18n="tok.dev">Dev buy at launch</span><b id="tok-dev" data-i18n="tok.devsoon">Announced at launch</b></div>
+            <div><span data-i18n="tok.r2">Buy / sell tax</span><b>0 / 0</b></div>
+            <div><span data-i18n="tok.r3">Presale</span><b data-i18n="tok.none">None</b></div>
+            <div><span data-i18n="tok.r4">Launch</span><b data-i18n="tok.fair">Fair launch</b></div>
             <div><span data-i18n="tok.r5">Blockchain</span><b>Solana</b></div>
           </div>
         </aside>
       </div>
       <div class="trust-grid">
         <div class="panel rv" id="security">
-          <h3 data-i18n="sec.title">Sécurité du contrat</h3>
-          <p data-i18n="sec.lede">Tout se vérifie on-chain. Les preuves s'activent ici dès que le token est créé.</p>
+          <h3 data-i18n="sec.title">Contract security</h3>
+          <p data-i18n="sec.lede">Everything can be checked on-chain. The proofs light up here as soon as the token is created.</p>
           <ul class="checklist">
-            <li data-chk="mint"><span data-i18n="sec.mint">Autorité de mint révoquée : personne ne peut créer de nouveaux tokens</span><a class="pill" data-i18n="sec.soon">Au lancement</a></li>
-            <li data-chk="freeze"><span data-i18n="sec.freeze">Autorité de freeze révoquée : personne ne peut bloquer ton wallet</span><a class="pill" data-i18n="sec.soon">Au lancement</a></li>
-            <li data-chk="lp"><span data-i18n="sec.lp">Liquidité verrouillée : impossible de la retirer</span><a class="pill" data-i18n="sec.soon">Au lancement</a></li>
-            <li class="ok"><span data-i18n="sec.tax">0 % de taxe à l'achat et à la vente</span><span class="pill" data-i18n="sec.always">Toujours</span></li>
+            <li data-chk="mint"><span data-i18n="sec.mint">Mint authority revoked: nobody can create new tokens</span><a class="pill" data-i18n="sec.soon">At launch</a></li>
+            <li data-chk="freeze"><span data-i18n="sec.freeze">Freeze authority revoked: nobody can freeze your wallet</span><a class="pill" data-i18n="sec.soon">At launch</a></li>
+            <li data-chk="lp"><span data-i18n="sec.lp">Liquidity locked: it cannot be pulled</span><a class="pill" data-i18n="sec.soon">At launch</a></li>
+            <li class="ok"><span data-i18n="sec.tax">0% tax on buys and sells</span><span class="pill" data-i18n="sec.always">Always</span></li>
           </ul>
         </div>
         <div class="panel rv" id="official">
-          <h3 data-i18n="off.title">Liens officiels</h3>
+          <h3 data-i18n="off.title">Official links</h3>
           <ul class="links" id="off-links"></ul>
-          <p class="no-dm"><b>!</b><span data-i18n="off.nodm">On ne te contactera jamais en message privé et on ne te demandera jamais ta phrase secrète. Tout autre lien que ceux-ci est une arnaque.</span></p>
+          <p class="no-dm"><b>!</b><span data-i18n="off.nodm">We will never DM you and never ask for your secret phrase. Any link other than these is a scam.</span></p>
         </div>
       </div>
     </div>
@@ -767,20 +760,20 @@ footer .wrap{display:grid;gap:22px}
       <div class="sec-head rv">
         <span class="hud" data-i18n="m.eyebrow">Roadmap</span>
         <h2 data-i18n="m.title">Missions</h2>
-        <p data-i18n="m.lede">Le plan du casse, étape par étape. Comme dans le jeu, on débloque la mission suivante quand la précédente est bouclée.</p>
+        <p data-i18n="m.lede">The heist plan, step by step. Just like in the game, the next mission unlocks once the last one is done.</p>
       </div>
       <div class="missions">
-        <div class="mission is-live rv from-left" style="--d:0s"><div class="num">Mission <b>01</b></div><div><h3 data-i18n="m1.h">Le repérage</h3><p data-i18n="m1.p">On prépare le terrain avant le jour J.</p>
+        <div class="mission is-live rv from-left" style="--d:0s"><div class="num">Mission <b>01</b></div><div><h3 data-i18n="m1.h">Casing the joint</h3><p data-i18n="m1.p">Getting everything ready before launch day.</p>
           <ul class="checks">
-            <li data-i18n="m1.c1">Le gang est formé : trois braqueurs et un ennemi</li>
-            <li data-i18n="m1.c2">Logo, site et mini-jeu en ligne</li>
-            <li data-i18n="m1.c3">10 vidéos tournées : trailer, fiches suspects, Breaking News, The Plan, The Getaway…</li>
-            <li data-i18n="m1.c4">Ouverture du X et du Telegram</li>
-            <li class="todo" data-i18n="m1.c5">Annonce de l'heure exacte du lancement</li>
-          </ul></div><span class="status live" data-i18n="st.live">En cours · 4/5</span></div>
-        <div class="mission rv from-left" style="--d:.1s"><div class="num">Mission <b>02</b></div><div><h3 data-i18n="m2.h">Le casse</h3><p data-i18n="m2.p">19.11.2026 : lancement de $MTA en fair launch, le jour même de la sortie du jeu. Adresse du contrat publiée ici et sur X, graphique en direct sur ce site.</p></div><span class="status next">19.11</span></div>
-        <div class="mission rv from-left" style="--d:.2s"><div class="num">Mission <b>03</b></div><div><h3 data-i18n="m3.h">La cavale</h3><p data-i18n="m3.p">Une vidéo du gang chaque jour, mise à jour DexScreener, raids sur X et TikTok. Toute la ville est à nos trousses.</p></div><span class="status" data-i18n="st.locked">Verrouillée</span></div>
-        <div class="mission rv from-left" style="--d:.3s"><div class="num">Mission <b>04</b></div><div><h3 data-i18n="m4.h">Cinq étoiles</h3><p data-i18n="m4.p">Niveau de recherche maximal : nouveaux membres du gang, saison 2 des vidéos, merch et surprises pour les holders.</p></div><span class="status" data-i18n="st.locked">Verrouillée</span></div>
+            <li data-i18n="m1.c1">The crew is assembled: three robbers and one enemy</li>
+            <li data-i18n="m1.c2">Logo, website and mini-game live</li>
+            <li data-i18n="m1.c3">10 videos shot: trailer, suspect files, Breaking News, The Plan, The Getaway…</li>
+            <li data-i18n="m1.c4">X and Telegram open</li>
+            <li class="todo" data-i18n="m1.c5">Exact launch time announced</li>
+          </ul></div><span class="status live" data-i18n="st.live">In progress · 4/5</span></div>
+        <div class="mission rv from-left" style="--d:.1s"><div class="num">Mission <b>02</b></div><div><h3 data-i18n="m2.h">The heist</h3><p data-i18n="m2.p">19.11.2026: $MTA fair launch, on the game's release day. Contract address posted here and on X, live chart right on this site.</p></div><span class="status next">19.11</span></div>
+        <div class="mission rv from-left" style="--d:.2s"><div class="num">Mission <b>03</b></div><div><h3 data-i18n="m3.h">On the run</h3><p data-i18n="m3.p">A crew video every day, DexScreener update, raids on X and TikTok, high-score contests on the heist. The whole city is after us.</p></div><span class="status" data-i18n="st.locked">Locked</span></div>
+        <div class="mission rv from-left" style="--d:.3s"><div class="num">Mission <b>04</b></div><div><h3 data-i18n="m4.h">Five stars</h3><p data-i18n="m4.p">Maximum wanted level: new crew members, season 2 of the videos, merch and surprises for holders.</p></div><span class="status" data-i18n="st.locked">Locked</span></div>
       </div>
     </div>
   </section>
@@ -790,19 +783,19 @@ footer .wrap{display:grid;gap:22px}
     <div class="wrap">
       <div class="sec-head rv">
         <span class="hud" data-i18n="g.eyebrow">Bonus</span>
-        <h2 data-i18n="g.title">Le braquage</h2>
-        <p data-i18n="g.lede">Choisis ton braqueur et fuis à travers la ville : saute les voitures de police, glisse sous les hélicos, ramasse le butin. Attrape la clé Kingsegg pour passer en mode nitro.</p>
+        <h2 data-i18n="g.title">The heist</h2>
+        <p data-i18n="g.lede">Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot. Catch the Kingsegg key to go full nitro.</p>
       </div>
       <div class="game-shell rv zoom">
         <div class="game-bar">
           <div class="pick" role="group" aria-label="Character">
-            <button type="button" id="pick-pumpchi" data-char="pumpchi" aria-pressed="true"><img src="assets/sprite-pumpchi.webp" alt=""><span>Pumpchi<small data-i18n="g.perk1">Double saut</small></span></button>
-            <button type="button" id="pick-pengie" data-char="pengie" aria-pressed="false"><img src="assets/sprite-pengie.webp" alt=""><span>Pengie<small data-i18n="g.perk2">Sac aimanté</small></span></button>
-            <button type="button" id="pick-talljr" data-char="talljr" aria-pressed="false"><img src="assets/sprite-talljr.webp" alt=""><span>Tall-JR<small data-i18n="g.perk3">Nitro plus longue</small></span></button>
+            <button type="button" id="pick-pumpchi" data-char="pumpchi" aria-pressed="true"><img src="assets/sprite-pumpchi.webp" alt=""><span>Pumpchi<small data-i18n="g.perk1">Double jump</small></span></button>
+            <button type="button" id="pick-pengie" data-char="pengie" aria-pressed="false"><img src="assets/sprite-pengie.webp" alt=""><span>Pengie<small data-i18n="g.perk2">Magnet bag</small></span></button>
+            <button type="button" id="pick-talljr" data-char="talljr" aria-pressed="false"><img src="assets/sprite-talljr.webp" alt=""><span>Tall-JR<small data-i18n="g.perk3">Longer nitro</small></span></button>
           </div>
           <div class="game-side">
-            <span class="best"><span data-i18n="g.best">Record</span> : <b id="best">$0</b></span>
-            <a class="share-x" id="share-x" href="https://x.com/intent/tweet" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.1-6.7L5.4 22H2.3l7.7-8.8L2 2h6.8l4.6 6.1L18.9 2Zm-1.2 18h1.8L7.4 3.9H5.5L17.7 20Z"/></svg><span data-i18n="g.share">Partager</span></a>
+            <span class="best"><span data-i18n="g.best">Best</span> : <b id="best">$0</b></span>
+            <a class="share-x" id="share-x" href="https://x.com/intent/tweet" target="_blank" rel="noopener" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M18.9 2H22l-7.2 8.2L23 22h-6.6l-5.1-6.7L5.4 22H2.3l7.7-8.8L2 2h6.8l4.6 6.1L18.9 2Zm-1.2 18h1.8L7.4 3.9H5.5L17.7 20Z"/></svg><span data-i18n="g.share">Share</span></a>
             <button class="icon-btn" type="button" id="mute" aria-pressed="false">SON ON</button>
           </div>
         </div>
@@ -810,12 +803,12 @@ footer .wrap{display:grid;gap:22px}
           <canvas id="game"></canvas>
         </div>
         <div class="touch-pad">
-          <button type="button" id="btn-slide" data-i18n="g.slide">Glisser</button>
-          <button type="button" id="btn-jump" data-i18n="g.jump">Sauter</button>
+          <button type="button" id="btn-slide" data-i18n="g.slide">Slide</button>
+          <button type="button" id="btn-jump" data-i18n="g.jump">Jump</button>
         </div>
-        <p class="game-help" data-i18n="g.help">Espace ou ↑ pour sauter, ↓ pour glisser, Échap pour la pause. Sur mobile : tape pour sauter, glisse vers le bas pour passer sous les hélicos.</p>
+        <p class="game-help" data-i18n="g.help">Space or ↑ to jump, ↓ to slide, Esc to pause. On mobile: tap to jump, swipe down to slide under the choppers.</p>
         <div>
-          <p class="hud" style="font-size:.75rem;color:var(--muted);margin-bottom:8px" data-i18n="g.board">Tes meilleurs casses</p>
+          <p class="hud" style="font-size:.75rem;color:var(--muted);margin-bottom:8px" data-i18n="g.board">Your best heists</p>
           <div class="board" id="board"></div>
         </div>
       </div>
@@ -828,12 +821,12 @@ footer .wrap{display:grid;gap:22px}
     <div class="foot-top">
       <a class="brand" href="#top"><img src="assets/logo-192.png" alt="" width="40" height="40"><span>Memes Theft Auto</span></a>
       <div class="socials">
-        <a class="btn btn-ghost btn-sm" id="soc-x" href="#top" aria-disabled="true" data-i18n="soc.x">X · bientôt</a>
-        <a class="btn btn-ghost btn-sm" id="soc-tg" href="#top" aria-disabled="true" data-i18n="soc.tg">Telegram · bientôt</a>
+        <a class="btn btn-ghost btn-sm" id="soc-x" href="#top" aria-disabled="true" data-i18n="soc.x">X · soon</a>
+        <a class="btn btn-ghost btn-sm" id="soc-tg" href="#top" aria-disabled="true" data-i18n="soc.tg">Telegram · soon</a>
         <a class="btn btn-ghost btn-sm" id="soc-dex" href="#top" aria-disabled="true" data-i18n="soc.dex">DexScreener · 19.11</a>
       </div>
     </div>
-    <p class="disclaimer" data-i18n="foot.disc">$MTA est un memecoin parodique, sans valeur intrinsèque ni promesse de rendement. Projet non affilié à Rockstar Games, Take-Two Interactive ou à tout éditeur de jeu vidéo ; les personnages et la marque Kingsegg sont des parodies. Rien sur ce site n'est un conseil financier. Les cryptomonnaies sont très risquées : n'investis que ce que tu peux te permettre de perdre.</p>
+    <p class="disclaimer" data-i18n="foot.disc">$MTA is a parody memecoin with no intrinsic value and no promise of returns. Not affiliated with Rockstar Games, Take-Two Interactive or any video game publisher; the characters and the Kingsegg brand are parodies. Nothing on this site is financial advice. Crypto is very risky: only put in what you can afford to lose.</p>
     <p class="disclaimer">© 2026 Memes Theft Auto</p>
   </div>
 </footer>
@@ -859,64 +852,6 @@ const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 /* ---------------- i18n ---------------- */
 const T = {
- fr:{
-  'live.title':'Le casse en direct','live.price':'Prix','live.vol':'Volume 24 h','live.liq':'Liquidité','live.chg':'Variation 24 h',
-  'sec.title':'Sécurité du contrat','sec.lede':"Tout se vérifie on-chain. Les preuves s'activent ici dès que le token est créé.",
-  'sec.mint':'Autorité de mint révoquée : personne ne peut créer de nouveaux tokens','sec.freeze':'Autorité de freeze révoquée : personne ne peut bloquer ton wallet','sec.lp':'Liquidité verrouillée : impossible de la retirer',"sec.tax":"0 % de taxe à l'achat et à la vente",'sec.soon':'Au lancement','sec.always':'Toujours','sec.verify':'Vérifier ↗',
-  'off.title':'Liens officiels','off.site':'Site','off.ca':'Contrat','off.ca.soon':'Dévoilé au lancement','off.soon':'Bientôt',
-  'off.nodm':"On ne te contactera jamais en message privé et on ne te demandera jamais ta phrase secrète. Tout autre lien que ceux-ci est une arnaque.",
-  'mp.copied':'Adresse copiée · Bienvenue dans le gang','mp.record':'Nouveau record','intro.load':'Chargement','intro.skip':'Appuie pour passer',
-  'tape.a':'Scène du casse · Ne pas franchir · $MTA ·','tape.b':'Zone de fuite · Police · Ne pas franchir · $MTA ·',
-  'nav.vids':'Vidéos','p1.h':'1,75 m','p2.h':'1,78 m','p3.h':'1,95 m',
-  'foe.file':'Cible n°','foe.level':'Rug level max','foe.stamp':'À récupérer','foe.role':'Le rugger',
-  'foe.sign':'Sweat bleu « TRUST ME BRO »','foe.skill':'Partir avec la liquidité','foe.last':"En train de bloquer sa porte d'entrée",
-  'foe.eyebrow':"L'ennemi du gang",'foe.lede':"Il a promis la lune à tout le monde, puis il est parti avec la caisse. La police ne le cherche pas. Le gang, si : ils sont passés chez lui récupérer ce qu'il a volé.",
-  'foe.np1':'Ennemi public','foe.np2':'Ennemi du gang','foe.quote':'« Les rugs ne sont pas acceptés dans notre ville. »','foe.cite':'Le gang $MTA','foe.hunted':'Sur ses traces','foe.watch':'Voir la récupération ▶',
-  'v.eyebrow':'Images de surveillance','v.title':'Les vidéos','v.lede':'Le trailer, les fiches suspects, les flashs info et les coulisses du casse. Monte le son.',
-  'm1.c1':'Le gang est formé : trois braqueurs et un ennemi','m1.c2':'Logo, site et mini-jeu en ligne','m1.c3':'10 vidéos tournées : trailer, fiches suspects, Breaking News, The Plan, The Getaway…','m1.c4':'X et Telegram ouverts','m1.c5':"Annonce de l'heure exacte du lancement",
-  'g.share':'Partager','g.shareTxt':"Je viens de braquer {s} avec {c} dans Memes Theft Auto {st}\nTu fais mieux ? $MTA · 19.11 · Solana",
-  news:["Trois suspects repérés en train de préparer le casse de la Bank of Solana","Lancement fixé au 19.11 · fair launch · aucun token réservé · 0 taxe","Des témoins signalent un sac à dos pingouin orange « rempli de liquidité »","Une hypercar Kingsegg noire a été vue quittant la marina","Rugsy Jack toujours retranché derrière sa porte d'entrée","Les autorités préviennent : ne les approchez pas, ils vont vous shiller du $MTA","Adresse officielle du contrat : uniquement sur ce site et sur notre X","Nouveau record au braquage ? Partage ton score sur X"],
-  'nav.coup':'Le coup','nav.gang':'Le gang','nav.buy':'Acheter','nav.missions':'Missions','nav.game':'Le braquage',
-  'cta.buy':'Acheter $MTA','cta.how':'Comment acheter','cta.play':'Jouer au braquage','chip.fair':'Fair launch',
-  'hero.title':"Le casse de l'année commence le <em>19.11</em>",
-  'hero.lede':"Trois légendes du memecoin, un gang, un seul objectif : faire sauter la banque le jour où toute la planète gaming sera devant son écran.",
-  'cd.d':'Jours','cd.h':'Heures','cd.m':'Min','cd.s':'Sec','cd.note':'Heure exacte du lancement annoncée sur X.','cd.live':"C'est l'heure du casse. Le contrat est en haut de la page.",
-  'ca.label':'Contrat','ca.soon':'Dévoilé au lancement, uniquement ici et sur X','ca.copy':'Copier','ca.copied':'Copié','tip.label':'Astuce',
-  'coup.eyebrow':'Le coup','coup.title':"$MTA, c'est quoi ?",
-  'coup.lede':"Memes Theft Auto est un memecoin parodique sur Solana. On a pris l'esthétique des jeux de braquage en monde ouvert, trois figures bien connues du memecoin, et on en a fait un gang.",
-  'coup.k1':'Le gang','coup.h1':'Trois braqueurs, trois styles','coup.p1':'Pumpchi le cerveau, Pengie le logisticien, Tall-JR le chauffeur. Chacun a sa fiche, son 360 et ses vidéos.',
-  'coup.k2':'Le timing','coup.h2':'Lancement le 19.11.2026','coup.p2':"Le jour de sortie du jeu le plus attendu de la décennie. Toute la planète gaming regarde, le gang passe à l'action.",
-  'coup.k3':'Le deal','coup.h3':'Fair launch','coup.p3':"Aucun token réservé à l'équipe, pas de taxe, pas de presale. Le dev achète au lancement, au même prix que tout le monde, et c'est visible on-chain.",
-  'gang.eyebrow':'Fiches suspects','gang.title':'Le gang','gang.lede':"Recherchés dans tout l'État. Si vous les croisez, ne les approchez pas : ils vont vous parler de leur bag.",'gang.file':'Fiche n°',
-  'f.sign':'Signe distinctif','f.skill':'Spécialité','f.last':'Vu pour la dernière fois',
-  'p1.role':'Le cerveau','p1.bio':"Il repère les coups avant tout le monde, entre au premier bloc et ressort avant la fin du film. Personne ne l'a jamais vu paniquer.",'p1.sign':'Pilule verte dans le dos','p1.skill':'Entrer tôt, sortir propre','p1.last':'En jet privé, au téléphone',
-  'p2.role':'Le logisticien','p2.bio':"Tout le butin finit dans son sac pingouin orange. Personne ne sait ce qu'il y a dedans, pas même lui. Il n'enlève jamais ses lunettes.",'p2.sign':'Sac à dos pingouin orange','p2.skill':'Ramasser tout ce qui traîne','p2.last':'Devant une supercar orange, sur son téléphone',
-  'p3.role':'Le chauffeur','p3.bio':"1,95 m, clé de Kingsegg en main. Il démarre avant que l'alarme sonne et on le voit arriver de très loin. Discret, il ne l'a jamais été.",'p3.sign':'Clé Kingsegg, chaînes en argent','p3.skill':'La fuite à 400 km/h','p3.last':'Dans une piscine à débordement',
-  'buy.eyebrow':'Rejoindre le casse','buy.title':'Comment acheter $MTA','buy.lede':"Quatre étapes, quelques minutes. Prépare tout avant le 19.11 pour entrer dans la banque dès l'ouverture.",
-  's1.h':'Installe Phantom','s1.p':'Télécharge le wallet <a href="https://phantom.com" target="_blank" rel="noopener">Phantom</a> (ou Solflare) sur ton téléphone ou en extension de navigateur. Note ta phrase secrète sur papier et ne la partage jamais.',
-  's2.h':'Récupère des SOL','s2.p':'Achète des SOL directement dans Phantom ou sur un exchange, puis envoie-les vers ton wallet. Garde un peu de SOL pour les frais.',
-  's3.h':"Copie l'adresse officielle",'s3.p':"Le jour J, l'adresse du contrat $MTA apparaît en haut de cette page et sur notre X. Copie-la uniquement depuis ces deux endroits.",
-  's4.h':'Swap SOL → $MTA','s4.p':'Colle l\'adresse sur <a href="{JUP}" target="_blank" rel="noopener">Jupiter</a>, choisis ton montant et valide. Bienvenue dans le gang.',
-  'buy.warn':"Méfie-toi des faux tokens : n'importe qui peut créer un « MTA ». Si l'adresse ne vient pas de ce site ou de notre X, ce n'est pas nous.",
-  'tok.eyebrow':'Tokenomics','tok.title':'Le partage du butin','tok.supply':'$MTA, supply totale','tok.community':'En vente publique',
-  'tok.r1':"Tokens réservés à l'équipe",'tok.r2':'Taxe achat / vente','tok.r3':'Presale','tok.r4':'Lancement','tok.r5':'Blockchain','tok.none':'Aucun','tok.fair':'Fair launch','tok.dev':'Dev buy au lancement','tok.devsoon':'Annoncé au lancement','tok.devval':'{p} % de la supply',
-  'm.eyebrow':'Roadmap','m.title':'Missions','m.lede':'Le plan du casse, étape par étape. Comme dans le jeu, on débloque la mission suivante quand la précédente est bouclée.',
-  'm1.h':'Le repérage','m1.p':'On prépare le terrain avant le jour J.',
-  'm2.h':'Le casse','m2.p':'19.11.2026 : lancement de $MTA en fair launch, le jour même de la sortie du jeu. Adresse du contrat publiée ici et sur X, graphique en direct sur ce site.',
-  'm3.h':'La cavale','m3.p':'Une vidéo du gang chaque jour, mise à jour DexScreener, raids sur X et TikTok, concours de scores sur le braquage. Toute la ville est à nos trousses.',
-  'm4.h':'Cinq étoiles','m4.p':'Niveau de recherche maximal : nouveaux membres du gang, saison 2 des vidéos, merch et surprises pour les holders.',
-  'st.live':'En cours · 4/5','st.locked':'Verrouillée',
-  'g.eyebrow':'Bonus','g.title':'Le braquage','g.lede':"Choisis ton braqueur et fuis à travers la ville : saute les voitures de police, glisse sous les hélicos, ramasse le butin. Attrape la clé Kingsegg pour passer en mode nitro.",
-  'g.perk1':'Double saut','g.perk2':'Sac aimanté','g.perk3':'Nitro plus longue','g.best':'Record',
-  'g.help':"Espace ou ↑ pour sauter, ↓ pour glisser, Échap pour la pause. Sur mobile : tape pour sauter, glisse vers le bas pour passer sous les hélicos.",
-  'g.jump':'Sauter','g.slide':'Glisser','g.board':'Tes meilleurs casses','g.empty':'Aucun casse pour l’instant',
-  'g.start':'Appuie pour lancer le casse','g.controls':'Saute la police · glisse sous les hélicos · ramasse le butin','g.busted':'BUSTED','g.again':'Appuie pour rejouer · ou partage ton casse sur X ↗','g.paused':'PAUSE','g.resume':'Appuie pour reprendre',
-  'g.loot':'Butin','g.dist':'Distance','g.combo':'Meilleur combo','g.newbest':'Nouveau record !','g.nitro':'NITRO !','g.x2':'BUTIN x2 !','g.wanted':'Niveau de recherche',
-  'snd.on':'SON ON','snd.off':'SON OFF',
-  'soc.x':'X · bientôt','soc.tg':'Telegram · bientôt','soc.dex':'DexScreener · 19.11',
-  'foot.disc':"$MTA est un memecoin parodique, sans valeur intrinsèque ni promesse de rendement. Projet non affilié à Rockstar Games, Take-Two Interactive ou à tout éditeur de jeu vidéo ; les personnages et la marque Kingsegg sont des parodies. Rien sur ce site n'est un conseil financier. Les cryptomonnaies sont très risquées : n'investis que ce que tu peux te permettre de perdre.",
-  tips:["Tall-JR fait 1,95 m. Discret, il ne l'est pas.","Ne demande jamais à Pengie ce qu'il y a dans son sac.","Pumpchi entre toujours le premier. Et ressort avant tout le monde.","La seule adresse officielle du contrat sera affichée sur ce site et sur notre X.","Dans le braquage, la clé Kingsegg te met au volant pendant quelques secondes.","Le 19.11, prépare tes SOL avant l'ouverture de la banque."]
- },
  en:{
   'live.title':'The heist, live','live.price':'Price','live.vol':'24h volume','live.liq':'Liquidity','live.chg':'24h change',
   'sec.title':'Contract security','sec.lede':'Everything can be checked on-chain. The proofs light up here as soon as the token is created.',
@@ -976,20 +911,15 @@ const T = {
   tips:["Tall-JR is 6'5\". Low profile is not his thing.","Never ask Pengie what's in his bag.","Pumpchi always goes in first. And gets out before everyone.","The only official contract address will be posted on this site and on our X.","In the heist, the Kingsegg key puts you behind the wheel for a few seconds.","On 19.11, have your SOL ready before the bank opens."]
  }
 };
-let lang = 'en';
-try { const s = localStorage.getItem('mta-lang'); if (s === 'fr' || s === 'en') lang = s; else lang = 'en'; } catch (e) { lang = 'en'; }
-const t = k => (T[lang] && T[lang][k]) ?? T.fr[k] ?? k;
+const lang = 'en';
+const t = k => T.en[k] ?? k;
 function applyLang(){
   document.documentElement.lang = lang;
   document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
   document.querySelectorAll('[data-i18n-html]').forEach(el => { el.innerHTML = String(t(el.dataset.i18nHtml)).replace('{JUP}', JUP); });
-  document.querySelectorAll('.lang button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.lang === lang)));
   document.getElementById('stage').setAttribute('aria-label', t('g.title'));
   setMuteLabel(); showTip(true); tickCountdown(true); renderBoard(); renderTicker(); renderReel(); updateShare(); renderTape(); renderLinks(); introText(); if (Game.draw) Game.draw();
 }
-document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
-  lang = b.dataset.lang; try { localStorage.setItem('mta-lang', lang); } catch (e) {} applyLang();
-}));
 
 /* ---------------- News ticker ---------------- */
 const tkRun = document.getElementById('tk-run');
@@ -1013,30 +943,30 @@ gangEl.addEventListener('scroll', () => {
 
 /* ---------------- Videos ---------------- */
 const VIDS = [
-  ['trailer', 'Trailer', 'Trailer', "L'écran de chargement", 'The loading screen'],
-  ['teaser', 'Teaser', 'Teaser', '3 suspects, 1 casse', '3 suspects, 1 heist'],
-  ['meet-pumpchi', 'Suspect 01', 'Suspect 01', 'Pumpchi, le cerveau', 'Meet Pumpchi'],
-  ['meet-pengie', 'Suspect 02', 'Suspect 02', 'Pengie, le logisticien', 'Meet Pengie'],
-  ['meet-talljr', 'Suspect 03', 'Suspect 03', 'Tall-JR, le chauffeur', 'Meet Tall-JR'],
-  ['fighter', 'Select', 'Select', 'Choisis ton braqueur', 'Choose your fighter'],
-  ['news', 'MTA News 24', 'MTA News 24', "Breaking News : chasse à l'homme", 'Breaking News: manhunt'],
-  ['collection', 'Rugsy Jack', 'Rugsy Jack', 'La récupération', 'The Collection'],
-  ['wasted', 'Wasted', 'Wasted', 'Vendu 5 minutes trop tôt', 'Sold 5 minutes too early'],
-  ['cheat', 'Cheat code', 'Cheat code', 'DIAMONDHANDS', 'DIAMONDHANDS'],
-  ['pov', 'POV', 'POV', 'Tu as acheté $MTA tôt', 'You bought $MTA early']
+  ['trailer', 'Trailer', 'The loading screen'],
+  ['teaser', 'Teaser', '3 suspects, 1 heist'],
+  ['meet-pumpchi', 'Suspect 01', 'Meet Pumpchi'],
+  ['meet-pengie', 'Suspect 02', 'Meet Pengie'],
+  ['meet-talljr', 'Suspect 03', 'Meet Tall-JR'],
+  ['fighter', 'Select', 'Choose your fighter'],
+  ['news', 'MTA News 24', 'Breaking News: manhunt'],
+  ['collection', 'Rugsy Jack', 'The Collection'],
+  ['wasted', 'Wasted', 'Sold 5 minutes too early'],
+  ['cheat', 'Cheat code', 'DIAMONDHANDS'],
+  ['pov', 'POV', 'You bought $MTA early']
 ];
 const LENS = {trailer:17, teaser:11, 'meet-pumpchi':13, 'meet-pengie':13, 'meet-talljr':13, fighter:10, news:16, collection:18, wasted:9, cheat:9, pov:20};
 const reel = document.getElementById('reel');
 function renderReel(){
   const playing = reel.querySelector('.clip.playing');
   if (playing) return;                           // don't rebuild under a playing video
-  reel.innerHTML = VIDS.map(([k, tf, te, hf, he]) => `
+  reel.innerHTML = VIDS.map(([k, te, he]) => `
     <article class="clip" data-k="${k}">
       <div class="clip-media"><img src="assets/v/${k}.jpg" alt="" loading="lazy" width="360" height="640">
-        <button type="button" class="clip-play" aria-label="Play: ${lang === 'fr' ? hf : he}"></button>
+        <button type="button" class="clip-play" aria-label="Play: ${he}"></button>
         <span class="clip-len">0:${String(LENS[k]).padStart(2, '0')}</span></div>
-      <span class="clip-tag">${lang === 'fr' ? tf : te}</span>
-      <h3>${lang === 'fr' ? hf : he}</h3>
+      <span class="clip-tag">${te}</span>
+      <h3>${he}</h3>
     </article>`).join('');
 }
 function stopClips(except){
