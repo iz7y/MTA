@@ -970,7 +970,7 @@ footer .wrap{display:grid;gap:22px}
       <div class="sec-head rv">
         <span class="hud" data-i18n="g.eyebrow">Bonus</span>
         <h2 data-i18n="g.title">The heist</h2>
-        <p data-i18n="g.lede">Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot. Catch the Kingsegg key to go full nitro.</p>
+        <p data-i18n="g.lede">Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro.</p>
       </div>
       <div class="game-shell rv zoom">
         <div class="game-bar">
@@ -1086,11 +1086,11 @@ const T = {
   'm3.h':'On the run','m3.p':'A crew video every day, DexScreener update, raids on X and TikTok, high-score contests on the heist. The whole city is after us.',
   'm4.h':'Five stars','m4.p':'Maximum wanted level: new crew members, season 2 of the videos, merch and surprises for holders.',
   'st.live':'Ready · 5/5','st.locked':'Locked',
-  'g.eyebrow':'Bonus','g.title':'The heist','g.lede':'Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot. Catch the Kingsegg key to go full nitro.',
+  'g.eyebrow':'Bonus','g.title':'The heist','g.lede':'Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro.',
   'g.perk1':'Double jump','g.perk2':'Magnet bag','g.perk3':'Longer nitro','g.best':'Best',
   'g.help':'Space or ↑ to jump, ↓ to slide, Esc to pause. On mobile: tap to jump, swipe down to slide under the choppers.',
   'g.jump':'Jump','g.slide':'Slide','g.board':'Your best heists','g.empty':'No heist yet',
-  'g.start':'Tap to start the heist','g.controls':'Jump the cops · slide under choppers · grab the loot','g.busted':'BUSTED','g.again':'Tap to play again · or share your heist on X ↗','g.paused':'PAUSED','g.resume':'Tap to resume',
+  'g.start':'Tap to start the heist','g.controls':'Jump the cops · slide under choppers · complete missions','g.busted':'BUSTED','g.again':'Tap to play again · or share your heist on X ↗','g.paused':'PAUSED','g.resume':'Tap to resume',
   'g.loot':'Loot','g.dist':'Distance','g.combo':'Best combo','g.newbest':'New record!','g.nitro':'NITRO!','g.x2':'LOOT x2!','g.wanted':'Wanted level',
   'snd.on':'SOUND ON','snd.off':'SOUND OFF',
   'soc.x':'X · soon','soc.tg':'Telegram · soon','soc.dex':'DexScreener · 19.11',
@@ -1449,8 +1449,19 @@ const SFX = {
   smash:() => { noise(.18, .14); tone(140, .2, 'sawtooth', .05, 60); },
   slide:() => noise(.12, .05),
   crash:() => { noise(.5, .22); tone(220, .5, 'sawtooth', .07, 55); },
-  star:() => { tone(660, .12, 'triangle', .05); setTimeout(() => tone(880, .2, 'triangle', .05), 110); }
+  star:() => { tone(660, .12, 'triangle', .05); setTimeout(() => tone(880, .2, 'triangle', .05), 110); },
+  close:() => { tone(1175, .06, 'square', .03); setTimeout(() => tone(1568, .1, 'square', .03), 50); },
+  mission:() => { [523, 659, 784, 1047, 1319].forEach((f, i) => setTimeout(() => tone(f, .14, 'triangle', .06), i * 80)); }
 };
+/* in-run missions: one at a time, the next unlocks when it's done */
+const MISSIONS = [
+  {k:'coins', n:40, txt:'Grab 40 coins'},
+  {k:'bags', n:2, txt:'Grab 2 money bags'},
+  {k:'close', n:3, txt:'Pull off 3 close calls'},
+  {k:'smash', n:3, txt:'Smash 3 obstacles on nitro'},
+  {k:'stars', n:3, txt:'Reach 3 wanted stars'},
+  {k:'dist', n:700, txt:'Run 700 m'}
+];
 
 /* ---- world ---- */
 let W = 960, H = 400, DPR = 1, state = 'ready', last = 0, raf = 0, G = null;
@@ -1464,11 +1475,23 @@ function reset(){
     obs:[], items:[], parts:[], floats:[], props:[],
     nextObs:1.4, nextItem:.4, nextPower:rnd(12, 18), nextProp:0,
     combo:0, comboT:0, bestCombo:0, stars:1, shake:0, flash:0, flashCol:'255,207,58', banner:null, siren:0, dead:0, newBest:false,
-    chasers:[]
+    chasers:[],
+    g:H * 3.9, buf:0, cnt:{coins:0, bags:0, close:0, smash:0}, mis:null, misDone:0, misPool:[]
   };
   G.py = G.ground;
+  nextMission();
   // pre-seed roadside props
   for (let x = 0; x < W + 400; x += rnd(160, 260)) G.props.push({x, k: Math.random() < .55 ? 'palm' : 'lamp', s: rnd(.85, 1.15)});
+}
+function nextMission(){
+  if (!G.misPool.length) G.misPool = MISSIONS.map((m, i) => i).sort(() => Math.random() - .5);
+  const m = MISSIONS[G.misPool.pop()];
+  G.mis = {...m, base: m.k === 'stars' || m.k === 'dist' ? 0 : G.cnt[m.k]};
+}
+function missionValue(){
+  const m = G.mis; if (!m) return 0;
+  if (m.k === 'stars') return G.stars; if (m.k === 'dist') return Math.floor(G.dist);
+  return G.cnt[m.k] - m.base;
 }
 function size(){
   const r = stage.getBoundingClientRect(); DPR = Math.min(2, devicePixelRatio || 1);
@@ -1492,8 +1515,9 @@ function jump(){
   if (G.nitro > 0) return;
   if (G.slide > 0){ G.slide = 0; }
   const onGround = G.py >= G.ground - .5;
-  if (onGround){ G.vy = -H * 2.05; G.jumpsLeft = CHARS[charKey].jumps - 1; SFX.jump(); dust(8); }
-  else if (G.jumpsLeft > 0){ G.vy = -H * 1.8; G.jumpsLeft--; SFX.jump(); burst(W * .17, G.py - G.ph * .3, 10, ['255,243,226']); }
+  if (onGround){ G.vy = -Math.sqrt(G.g * H * .92); G.jumpsLeft = CHARS[charKey].jumps - 1; SFX.jump(); dust(8); }
+  else if (G.jumpsLeft > 0){ G.vy = -Math.sqrt(G.g * H) * .8; G.jumpsLeft--; SFX.jump(); burst(W * .17, G.py - G.ph * .3, 10, ['255,243,226']); }
+  else G.buf = .16;   // pressed a bit early: jump as soon as we land
 }
 function slideStart(hold){
   audio();
@@ -1576,7 +1600,7 @@ function update(dt){
   // difficulty & wanted level
   const stars = Math.min(5, 1 + Math.floor(G.t / 14));
   if (stars > G.stars){ G.stars = stars; SFX.star(); G.banner = {txt:'★'.repeat(stars), life:1.4}; }
-  G.base = (330 + G.t * 9 + G.stars * 22) * s;
+  G.base = (360 + G.t * 9 + G.stars * 22) * s;
   G.base = Math.min(G.base, 820 * s);
   G.speed = G.base * (G.nitro > 0 ? 1.55 : 1);
   const dx = G.speed * dt; G.scroll += dx; G.dist += dx / (40 * s);
@@ -1589,8 +1613,12 @@ function update(dt){
   // physics
   if (G.nitro > 0){ G.py += (G.ground - G.py) * Math.min(1, dt * 12); G.vy = 0; }
   else {
-    G.vy += H * (G.slide > 0 ? 9 : 5.2) * dt; G.py += G.vy * dt;
-    if (G.py >= G.ground){ if (G.vy > H * 1.2) dust(6); G.py = G.ground; G.vy = 0; G.jumpsLeft = C.jumps; }
+    const kk = Math.max(0, Math.min(1, (G.base / s - 382) / 438));
+    G.g = H * (3.9 + 1.3 * kk);   // floatier at low speed so a single jump always clears a cop car
+    G.vy += (G.slide > 0 ? H * 9 : G.g) * dt; G.py += G.vy * dt;
+    if (G.py >= G.ground){ if (G.vy > H * 1.2) dust(6); G.py = G.ground; G.vy = 0; G.jumpsLeft = C.jumps;
+      if (G.buf > 0 && state === 'run' && G.slide <= 0){ G.buf = 0; G.vy = -Math.sqrt(G.g * H * .92); G.jumpsLeft = C.jumps - 1; SFX.jump(); dust(6); } }
+    G.buf = Math.max(0, G.buf - dt);
   }
   if (state === 'run' && G.py >= G.ground - .5 && Math.random() < dt * (G.nitro > 0 ? 30 : 8)) dust(1);
   // spawns
@@ -1614,11 +1642,17 @@ function update(dt){
     o.x -= dx + (o.vx || 0) * dt; if (o.warn) o.warn -= dt;
     if (o.fly){ o.vy += H * 4 * dt; o.y += o.vy * dt; o.x += o.fvx * dt; o.rot += o.vr * dt; continue; }
     if (state !== 'run') continue;
-    const ox = o.x + o.w * .1, ow = o.w * .8, oy = o.y + o.h * (o.k === 'heli' ? .34 : .12), oh = o.h * (o.k === 'heli' ? .55 : .85);
+    const cop = o.k === 'cop', ox = o.x + o.w * (cop ? .15 : .1), ow = o.w * (cop ? .7 : .8), oy = o.y + o.h * (o.k === 'heli' ? .34 : cop ? .2 : .12), oh = o.h * (o.k === 'heli' ? .55 : cop ? .78 : .85);
     if (hit.x < ox + ow && hit.x + hit.w > ox && hit.y < oy + oh && hit.y + hit.h > oy){
       if (G.nitro > 0 || G.inv > 0){
-        if (G.nitro > 0){ o.fly = true; o.vy = -H * 1.6; o.fvx = H * .9; o.vr = rnd(4, 9) * (Math.random() < .5 ? -1 : 1); o.rot = 0; addLoot(250, o.x + o.w / 2, o.y, '#ffcf3a'); burst(o.x, o.y + o.h / 2, 18, ['255,207,58','255,120,60','255,255,255']); G.shake = .35; SFX.smash(); }
+        if (G.nitro > 0){ o.fly = true; o.vy = -H * 1.6; o.fvx = H * .9; o.vr = rnd(4, 9) * (Math.random() < .5 ? -1 : 1); o.rot = 0; G.cnt.smash++; addLoot(250, o.x + o.w / 2, o.y, '#ffcf3a'); burst(o.x, o.y + o.h / 2, 18, ['255,207,58','255,120,60','255,255,255']); G.shake = .35; SFX.smash(); }
       } else { bust(); break; }
+    }
+    // close call: cleared it by a hair
+    if (!o.cc && G.nitro <= 0){
+      if (hit.x < ox + ow && hit.x + hit.w > ox){ const gap = o.low ? hit.y - (oy + oh) : oy - (hit.y + hit.h); o.mg = Math.min(o.mg ?? 1e9, gap); }
+      else if (ox + ow < hit.x && o.mg !== undefined){ o.cc = true;
+        if (o.mg >= 0 && o.mg < H * .07){ G.cnt.close++; addLoot(150, px + 30 * s, hit.y - 10 * s, '#24d4c4'); floater('CLOSE CALL!', px + 30 * s, hit.y - 34 * s, '#24d4c4'); SFX.close(); } }
     }
   }
   G.obs = G.obs.filter(o => o.x + o.w > -60 && o.y < H + 200);
@@ -1634,8 +1668,8 @@ function update(dt){
     if (state !== 'run') return true;
     const nx = Math.max(hit.x, Math.min(it.x, hit.x + hit.w)), ny = Math.max(hit.y, Math.min(it.y, hit.y + hit.h));
     if (Math.hypot(it.x - nx, it.y - ny) > it.r) return true;
-    if (it.k === 'coin'){ G.combo++; G.comboT = 1.4; addLoot(25, it.x, it.y, '#ffcf3a', true); burst(it.x, it.y, 5, ['255,207,58']); SFX.coin(); }
-    else if (it.k === 'bag'){ G.combo++; G.comboT = 1.4; addLoot(500, it.x, it.y, '#7ee08a'); cash(it.x, it.y, 10); G.flash = .3; G.flashCol = '120,230,140'; SFX.bag(); }
+    if (it.k === 'coin'){ G.cnt.coins++; G.combo++; G.comboT = 1.4; addLoot(25, it.x, it.y, '#ffcf3a', true); burst(it.x, it.y, 5, ['255,207,58']); SFX.coin(); }
+    else if (it.k === 'bag'){ G.cnt.bags++; G.combo++; G.comboT = 1.4; addLoot(500, it.x, it.y, '#7ee08a'); cash(it.x, it.y, 10); G.flash = .3; G.flashCol = '120,230,140'; SFX.bag(); }
     else if (it.k === 'key'){ G.nitro = C.nitro; G.banner = {txt:t('g.nitro'), life:1.3}; G.flash = .5; G.flashCol = '255,79,139'; burst(it.x, it.y, 24, ['255,79,139','255,207,58']); SFX.power(); }
     else if (it.k === 'x2'){ G.x2 = 9; G.banner = {txt:t('g.x2'), life:1.3}; G.flash = .5; G.flashCol = '255,207,58'; burst(it.x, it.y, 24, ['255,207,58','255,255,255']); SFX.power(); }
     G.bestCombo = Math.max(G.bestCombo, G.combo);
@@ -1646,6 +1680,11 @@ function update(dt){
   G.parts = G.parts.filter(p => p.life > 0);
   for (const f of G.floats){ f.y -= H * .25 * dt; f.life -= dt * 1.1; }
   G.floats = G.floats.filter(f => f.life > 0);
+  // mission progress
+  if (state === 'run' && G.mis && missionValue() >= G.mis.n){
+    G.misDone++; addLoot(1000, W / 2, H * .3, '#ffcf3a'); G.banner = {txt:'MISSION PASSED', life:1.6}; G.flash = .4; G.flashCol = '255,207,58'; SFX.mission();
+    burst(W / 2, H * .3, 26, ['255,207,58','255,243,226']); nextMission();
+  }
   // nitro ending gives a short grace period
   if (G.nitro > 0 && G.nitro - dt <= 0) G.inv = 1;
 }
@@ -1848,6 +1887,15 @@ function drawHUD(){
   const bar = (label, v, max, col) => { ctx.fillStyle = 'rgba(20,10,31,.7)'; ctx.fillRect(16, y, 120 * s, 8 * s); ctx.fillStyle = col; ctx.fillRect(16, y, 120 * s * (v / max), 8 * s); ctx.font = `600 ${11 * s}px "Chakra Petch", monospace`; ctx.fillStyle = '#fff3e2'; ctx.fillText(label, 16 + 126 * s, y - 2 * s); y += 16 * s; };
   if (G.nitro > 0) bar('NITRO', G.nitro, CHARS[charKey].nitro, '#ff4f8b');
   if (G.x2 > 0) bar('x2', G.x2, 9, '#ffcf3a');
+  if (G.mis && state === 'run'){
+    const v = Math.min(G.mis.n, missionValue()), label = `MISSION · ${G.mis.txt.toUpperCase()}`;
+    ctx.font = `700 ${11 * s}px "Chakra Petch", monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
+    const tw = Math.max(ctx.measureText(label).width, 120 * s) + 24 * s, bx = W / 2 - tw / 2, by = 12;
+    ctx.fillStyle = 'rgba(20,10,31,.72)'; ctx.fillRect(bx, by, tw, 30 * s);
+    ctx.fillStyle = '#ffcf3a'; ctx.fillText(label, W / 2, by + 5 * s);
+    ctx.fillStyle = 'rgba(255,243,226,.18)'; ctx.fillRect(bx + 12 * s, by + 21 * s, tw - 24 * s, 4 * s);
+    ctx.fillStyle = '#24d4c4'; ctx.fillRect(bx + 12 * s, by + 21 * s, (tw - 24 * s) * v / G.mis.n, 4 * s);
+  }
 }
 function draw(){
   if (!G) return;
@@ -1892,7 +1940,7 @@ function overlay(){
     const y0 = H * .24 + big * 1.2;
     hudText(money(G.loot), W / 2, y0, big * .95, '#ffcf3a', 'center');
     ctx.font = `600 ${Math.max(11, big * .3)}px "Chakra Petch", monospace`; ctx.fillStyle = '#fff3e2'; ctx.textAlign = 'center'; ctx.textBaseline = 'top';
-    ctx.fillText(`${t('g.dist')} ${Math.floor(G.dist)} m  ·  ${t('g.combo')} x${G.bestCombo}  ·  ${'★'.repeat(G.stars)}`, W / 2, y0 + big * 1.15);
+    ctx.fillText(`${t('g.dist')} ${Math.floor(G.dist)} m  ·  ${t('g.combo')} x${G.bestCombo}  ·  Missions ${G.misDone}  ·  ${'★'.repeat(G.stars)}`, W / 2, y0 + big * 1.15);
     if (G.newBest) hudText(t('g.newbest'), W / 2, y0 + big * 1.65, big * .45, '#24d4c4', 'center');
     hudText(t('g.again'), W / 2, y0 + big * 2.35, big * .42, '#c9b4d8', 'center');
   }
