@@ -179,13 +179,25 @@ p{margin:0}
 .episodes small{color:var(--muted)}
 .episodes li.locked{opacity:.75}
 .episodes li.locked .ep{color:var(--dusk-2)}
-.bait{position:fixed;z-index:70;left:max(14px,env(safe-area-inset-left,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:min(360px,calc(100vw - 28px));display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;border-radius:10px;background:linear-gradient(135deg,#ff2d55,#ff9a3c);color:#fff;box-shadow:0 14px 40px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .45s cubic-bezier(.2,.9,.2,1.2)}
-.bait.on{transform:none}
-.bait button.go{all:unset;cursor:pointer;display:grid;gap:2px;min-width:0}
-.bait .t1{font:400 1rem var(--f-display);letter-spacing:.02em;animation:baitwiggle 1.6s ease-in-out infinite}
-.bait .t2{font:700 .72rem var(--f-hud);letter-spacing:.08em;text-transform:uppercase;opacity:.9}
-.bait .x{all:unset;cursor:pointer;flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.25);font:700 .9rem var(--f-hud)}
-@keyframes baitwiggle{0%,100%{transform:none}50%{transform:rotate(-1.5deg) scale(1.03)}}
+.dm{position:fixed;inset:0;z-index:88;display:grid;place-items:center;padding:16px;pointer-events:none;background:rgba(10,4,20,0);transition:background .3s}
+.dm.on{background:rgba(10,4,20,.35)}
+.dm[hidden]{display:none}
+.dm-card{pointer-events:auto;width:min(380px,100%);border-radius:20px;padding:12px 14px 12px;background:rgba(40,22,62,.94);border:1px solid rgba(255,255,255,.12);box-shadow:0 24px 70px rgba(0,0,0,.6);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);color:var(--paper);transform:translateY(-30px) scale(.92);opacity:0;transition:transform .45s cubic-bezier(.2,.9,.2,1.2),opacity .3s;cursor:pointer}
+.dm.on .dm-card{transform:none;opacity:1}
+.dm-top{display:flex;justify-content:space-between;font:600 .72rem var(--f-hud);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.dm-top .dm-app::before{content:"💬 "}
+.dm-body{display:grid;grid-template-columns:46px minmax(0,1fr);gap:12px;align-items:start}
+.dm-av{width:46px;height:46px;border-radius:50%;display:block;box-shadow:0 0 0 2px #c0201f}
+.dm-body b{display:block;font:700 1rem var(--f-body)}
+.dm-body p{margin:2px 0 0;color:var(--paper);font-size:.98rem;line-height:1.4;min-height:1.4em}
+.typing{display:inline-flex;gap:4px;padding:6px 0}
+.typing i{width:7px;height:7px;border-radius:50%;background:var(--muted);animation:typ 1s infinite}
+.typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
+@keyframes typ{0%,60%,100%{transform:none;opacity:.5}30%{transform:translateY(-4px);opacity:1}}
+.dm-actions{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.dm-actions button{all:unset;cursor:pointer;text-align:center;padding:9px;border-radius:10px;background:rgba(255,255,255,.08);font:600 .9rem var(--f-body)}
+.dm-actions button.primary{background:#3b7bff;color:#fff}
+.dm-actions button:focus-visible{outline:2px solid var(--gold)}
 .busted{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:rgba(10,4,20,.82);backdrop-filter:blur(6px)}
 .busted[hidden]{display:none}
 .busted-card{position:relative;width:min(460px,100%);text-align:center;background:var(--dusk);border:2px solid #3b7bff;border-radius:16px;padding:28px 22px 22px;box-shadow:0 0 0 6px rgba(255,59,78,.25),0 30px 80px rgba(0,0,0,.6);animation:bustin .5s cubic-bezier(.2,.9,.2,1.2)}
@@ -195,10 +207,22 @@ p{margin:0}
 .busted-card p{color:var(--muted);margin-top:8px}
 .busted-card p b{color:var(--paper)}
 .busted-card .studio-actions{justify-content:center;margin-top:16px}
-.rugsy-peek{position:fixed;z-index:65;right:0;bottom:22%;width:84px;transform:translateX(100%);transition:transform .5s cubic-bezier(.2,.9,.2,1);cursor:pointer;border:0;background:none;padding:0}
-.rugsy-peek.on{transform:translateX(38%) rotate(-12deg)}
+.rugsy-peek{position:fixed;z-index:65;border:0;background:none;padding:0;cursor:pointer;width:92px;transition:transform .55s cubic-bezier(.2,.9,.2,1)}
 .rugsy-peek img{width:100%;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
-@media (prefers-reduced-motion:reduce){.bait .t1{animation:none}}
+.rugsy-peek[data-side="right"]{right:0;transform:translateX(110%) rotate(-18deg)}
+.rugsy-peek[data-side="right"].on{transform:translateX(38%) rotate(-18deg)}
+.rugsy-peek[data-side="left"]{left:0;transform:translateX(-110%) rotate(18deg)}
+.rugsy-peek[data-side="left"] img{transform:scaleX(-1)}
+.rugsy-peek[data-side="left"].on{transform:translateX(-38%) rotate(18deg)}
+.rugsy-peek[data-side="bottom"]{bottom:0;transform:translateY(110%)}
+.rugsy-peek[data-side="bottom"].on{transform:translateY(42%)}
+.rugsy-peek.run{transition-duration:.25s}
+.peek-say{position:absolute;top:-6px;white-space:nowrap;font:700 .78rem var(--f-hud);background:#fff3e2;color:var(--ink);padding:5px 9px;border-radius:12px;box-shadow:0 6px 16px rgba(0,0,0,.35)}
+.rugsy-peek[data-side="right"] .peek-say{right:75%;top:-14px}
+.rugsy-peek[data-side="left"] .peek-say{left:75%;top:-14px}
+.rugsy-peek[data-side="bottom"] .peek-say{left:85%;top:0}
+.rugsy-peek[data-side="bottom"].sl .peek-say{left:auto;right:85%}
+@media (prefers-reduced-motion:reduce){.typing i{animation:none}}
 
 /* ---------- NAV ---------- */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--night) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
@@ -1148,20 +1172,23 @@ footer .wrap{display:grid;gap:22px}
   </section>
 </main>
 
-<div class="bait" id="bait" role="complementary" aria-label="Advert" hidden>
-  <button type="button" class="go" id="bait-go"><span class="t1">🔥 EXCLUSIVE $MTA PRESALE · 90% OFF</span><span class="t2">Ends in <span id="bait-time">04:59</span> · by Rugsy Jack</span></button>
-  <button type="button" class="x" id="bait-x" aria-label="Close">✕</button>
+<div class="dm" id="dm" hidden>
+  <div class="dm-card" id="dm-card" role="alertdialog" aria-labelledby="dm-name" aria-describedby="dm-text" tabindex="-1">
+    <div class="dm-top"><span class="dm-app">New message</span><span>now</span></div>
+    <div class="dm-body"><img class="dm-av" src="assets/rugsy-avatar.webp" alt="" width="46" height="46"><div><b id="dm-name">Rugsy Jack</b><p id="dm-text"></p></div></div>
+    <div class="dm-actions"><button type="button" id="dm-ignore">Ignore</button><button type="button" class="primary" id="dm-open">Reply</button></div>
+  </div>
 </div>
 <div class="busted" id="busted" role="dialog" aria-modal="true" aria-labelledby="busted-title" hidden>
   <div class="busted-card">
     <span class="bust-stamp" id="busted-title">BUSTED</span>
     <img src="assets/stickers/31_rugsy_ngmi.webp" alt="Rugsy Jack, caught" width="150" height="150">
     <h3 style="font-size:var(--step-1)">You just got Rugsy'd.</h3>
-    <p><b>There is no presale. There never was.</b> $MTA is a fair launch on Pump.fun. The contract is only on this site, our X and our Telegram, and admins never DM first.</p>
+    <p><b>There is no presale, no secret contract and no airdrop to claim.</b> $MTA is a fair launch on Pump.fun. The contract is only on this site, our X and our Telegram, and admins never DM first.</p>
     <div class="studio-actions"><button type="button" class="btn btn-gold btn-sm" id="busted-ok">Got it</button><a class="btn btn-ghost btn-sm" id="busted-share" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Confess on X</a></div>
   </div>
 </div>
-<button type="button" class="rugsy-peek" id="rugsy-peek" aria-label="Rugsy Jack is hiding here" hidden><img src="assets/sprite-rugsy.webp" alt=""></button>
+<button type="button" class="rugsy-peek" id="rugsy-peek" data-side="right" aria-label="Rugsy Jack is hiding here" hidden><img src="assets/rugsy-peek.webp" alt=""><span class="peek-say" id="peek-say">psst…</span></button>
 
 <footer>
   <div class="wrap">
@@ -2429,25 +2456,50 @@ tickCountdown(true);
     you(); window.addEventListener('focus', you); setInterval(you, 4000);
     $('trk-eps').innerHTML = RUGSY.EPISODES.map(e => `<li class="${e.locked ? 'locked' : ''}"><span class="ep">EP ${e.n}</span><span><b>${e.title}</b><small>${e.sub}</small></span>${e.locked ? '<span class="hud" style="font-size:.7rem;color:var(--muted)">🔒 Locked</span>' : `<a class="btn btn-ghost btn-sm" href="#videos" data-ep-clip="${e.clip}">Watch ▶</a>`}</li>`).join('');
     document.querySelectorAll('[data-ep-clip]').forEach(a => a.addEventListener('click', ev => { const twin = document.querySelector(`[data-clip="${a.dataset.epClip}"]`); if (twin){ ev.preventDefault(); twin.click(); } }));
-    // fake presale bait: once per visit, after a while on the page
-    const bait = $('bait'), busted = $('busted');
-    let seen = false; try { seen = !!sessionStorage.getItem('mta-bait'); } catch (e) {}
-    const show = () => { if (seen) return; seen = true; try { sessionStorage.setItem('mta-bait', '1'); } catch (e) {} bait.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => bait.classList.add('on')));
-      let left = 299; const tm = setInterval(() => { left = Math.max(0, left - 1); $('bait-time').textContent = `0${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`; if (!bait.isConnected || bait.hidden) clearInterval(tm); }, 1000); };
-    const hide = () => { bait.classList.remove('on'); setTimeout(() => { bait.hidden = true; }, 500); };
-    setTimeout(show, 40000);
-    $('bait-x').addEventListener('click', () => { hide(); toast('Good instincts. Respect +'); });
-    $('bait-go').addEventListener('click', () => { hide(); busted.hidden = false; $('busted-ok').focus(); });
+    // Rugsy "DMs" you: a message notification in the middle of the screen (twice per visit at most)
+    const dm = $('dm'), busted = $('busted'), dmText = $('dm-text');
+    const LINES = [
+      "hey bro 👋 got an exclusive $MTA presale, 90% off. only 10 spots left. send 1 SOL and you're in 🤝",
+      "psst… the crew doesn't know but I have the REAL contract 🔑 early access, trust me bro",
+      "yo, admin here 😇 your wallet was selected for a $MTA airdrop. just connect it on my site to claim"
+    ].sort(() => Math.random() - .5);
+    let dmCount = 0, dmTimer = 0; try { dmCount = +(sessionStorage.getItem('mta-dm') || 0); } catch (e) {}
+    const dmBusy = () => !dm.hidden || !busted.hidden || document.hidden;
+    const showDm = () => {
+      if (dmCount >= 2 || dmBusy()) return; dmCount++; try { sessionStorage.setItem('mta-dm', String(dmCount)); } catch (e) {}
+      dmText.innerHTML = '<span class="typing" aria-label="typing"><i></i><i></i><i></i></span>';
+      dm.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => dm.classList.add('on')));
+      setTimeout(() => { dmText.textContent = LINES[(dmCount - 1) % LINES.length]; }, 1400);
+      clearTimeout(dmTimer); dmTimer = setTimeout(() => hideDm(), 14000);
+      if (dmCount < 2) setTimeout(showDm, 150000);
+    };
+    const hideDm = () => { clearTimeout(dmTimer); dm.classList.remove('on'); setTimeout(() => { dm.hidden = true; }, 350); };
+    setTimeout(showDm, 30000);
+    $('dm-ignore').addEventListener('click', e => { e.stopPropagation(); hideDm(); toast('Good instincts. Respect +'); });
+    const openBusted = () => { hideDm(); busted.hidden = false; $('busted-ok').focus(); };
+    $('dm-open').addEventListener('click', e => { e.stopPropagation(); openBusted(); });
+    $('dm-card').addEventListener('click', openBusted);
     $('busted-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(`I just got Rugsy'd on the $MTA site 😭 There is no presale.\n${SITE}`);
     const closeB = () => { busted.hidden = true; };
     $('busted-ok').addEventListener('click', closeB); busted.addEventListener('click', e => { if (e.target === busted) closeB(); });
-    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !busted.hidden) closeB(); });
-    // Rugsy peeks from the edge once, when you reach the bottom half of the page
-    const peek = $('rugsy-peek'); let peeked = false;
-    const onScroll = () => { if (peeked || scrollY < document.body.scrollHeight * .55) return; peeked = true; peek.hidden = false;
-      requestAnimationFrame(() => requestAnimationFrame(() => peek.classList.add('on'))); setTimeout(() => { peek.classList.remove('on'); setTimeout(() => peek.hidden = true, 600); }, 3500); };
-    addEventListener('scroll', onScroll, { passive: true });
-    peek.addEventListener('click', () => { peek.classList.remove('on'); toast('You spotted Rugsy! He ran.'); });
+    document.addEventListener('keydown', e => { if (e.key !== 'Escape') return; if (!busted.hidden) closeB(); else if (!dm.hidden){ hideDm(); } });
+    // Rugsy peeks from a random screen edge every so often
+    const peek = $('rugsy-peek'), say = $('peek-say');
+    const SAYS = ['psst…', 'presale? 👀', 'trust me bro', 'nice bags…', "don't tell the crew", '👀', 'got a minute?', 'shhh'];
+    let peeks = 0, peekT = 0;
+    const doPeek = () => {
+      if (peeks >= 8) return;
+      if (dmBusy() || scrollY < 200){ peekT = setTimeout(doPeek, 8000); return; }
+      peeks++; const side = ['right', 'left', 'bottom'][Math.floor(Math.random() * 3)];
+      peek.dataset.side = side; peek.classList.remove('on', 'run'); peek.style.top = peek.style.left = '';
+      peek.classList.remove('sl'); if (side === 'bottom'){ const x = 8 + Math.random() * 70; peek.style.left = x + '%'; if (x > 45) peek.classList.add('sl'); } else peek.style.top = (22 + Math.random() * 48) + '%';
+      say.textContent = SAYS[Math.floor(Math.random() * SAYS.length)];
+      peek.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => peek.classList.add('on')));
+      setTimeout(() => { peek.classList.remove('on'); setTimeout(() => { peek.hidden = true; }, 600); }, 3200);
+      peekT = setTimeout(doPeek, 22000 + Math.random() * 20000);
+    };
+    peekT = setTimeout(doPeek, 12000);
+    peek.addEventListener('click', () => { peek.classList.add('run'); peek.classList.remove('on'); toast('You spotted Rugsy! He ran.'); });
     function toast(msg){ let t = document.getElementById('mta-toast'); if (!t){ t = document.createElement('div'); t.id = 'mta-toast'; t.setAttribute('role', 'status');
       t.style.cssText = 'position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:var(--gold);color:var(--ink);font:700 .85rem var(--f-hud);letter-spacing:.06em;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
       t.textContent = msg; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, 2200); }
