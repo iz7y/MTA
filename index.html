@@ -117,6 +117,45 @@ p{margin:0}
 @media (max-width:960px){.slang{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:480px){.slang{grid-template-columns:1fr}}
 
+/* ---------- MOST WANTED ---------- */
+.mw-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:900px){.mw-grid{grid-template-columns:1fr}}
+.mw-side{display:grid;gap:22px;min-width:0}
+.board-list{list-style:none;margin:0;padding:0;display:grid;gap:8px;counter-reset:r}
+.board-list li{display:grid;grid-template-columns:44px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 14px;background:rgba(20,10,31,.5);border:1px solid var(--dusk-2);border-radius:10px}
+.board-list .rk{font:400 1.25rem var(--f-display);color:var(--muted);text-align:center}
+.board-list .who{min-width:0}
+.board-list .who b{display:block;font:600 1.02rem var(--f-hud);color:var(--paper);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.board-list .who small{font:600 .72rem var(--f-hud);letter-spacing:.1em;text-transform:uppercase;color:var(--gold)}
+.board-list .sc{font:700 1rem var(--f-hud);color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.board-list li.top{border-color:var(--gold);background:linear-gradient(90deg,rgba(255,207,58,.16),rgba(20,10,31,.5) 60%)}
+.board-list li.top .rk{color:var(--gold)}
+.board-empty{display:grid;gap:14px;justify-items:start;padding:22px;border:1px dashed var(--dusk-2);border-radius:12px;background:rgba(20,10,31,.4)}
+.board-empty p{color:var(--muted);max-width:46ch}
+.board-empty .ghost-rows{display:grid;gap:8px;width:100%}
+.board-empty .ghost-rows span{display:block;height:44px;border-radius:10px;background:linear-gradient(90deg,rgba(58,26,85,.5),rgba(58,26,85,.15));border:1px solid rgba(58,26,85,.7)}
+.chal{display:grid;gap:12px}
+.chal h3{font-size:var(--step-2)}
+.chal .when{display:inline-flex;width:fit-content;align-items:center;gap:8px;font:700 .78rem var(--f-hud);letter-spacing:.12em;text-transform:uppercase;color:var(--ink);background:var(--tide);padding:5px 10px;border-radius:3px;justify-self:start}
+.chal dl{display:grid;grid-template-columns:auto minmax(0,1fr);gap:8px 14px;margin:0}
+.chal dt{font:700 .72rem var(--f-hud);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.chal dd{margin:0;color:var(--paper)}
+.rotation{display:flex;flex-wrap:wrap;gap:8px}
+.rotation span{font:600 .72rem var(--f-hud);letter-spacing:.1em;text-transform:uppercase;padding:5px 10px;border-radius:999px;border:1px solid var(--dusk-2);color:var(--muted)}
+.rotation span.on{border-color:var(--gold);color:var(--gold)}
+.goals{list-style:none;margin:0;padding:0;display:grid;gap:16px}
+.goals .row{display:flex;justify-content:space-between;gap:10px;font:600 .9rem var(--f-hud);margin-bottom:6px}
+.goals .row b{color:var(--paper)} .goals .row span{color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
+.goals .track{height:10px;border-radius:99px;background:var(--dusk-2);overflow:hidden}
+.goals .track i{display:block;height:100%;background:linear-gradient(90deg,var(--sunset),var(--gold));width:var(--p)}
+.goals .unl{display:block;margin-top:6px;font-size:.92rem;color:var(--muted)}
+.goals li.done .unl{color:var(--tide)}
+.hall{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:10px}
+.hall div{padding:12px 14px;border:1px solid var(--dusk-2);border-radius:10px;background:rgba(20,10,31,.5)}
+.hall small{font:700 .7rem var(--f-hud);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hall b{display:block;font:600 1rem var(--f-hud);color:var(--gold);margin-top:4px}
+.hall span{font-size:.9rem;color:var(--muted)}
+
 /* ---------- NAV ---------- */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--night) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
 .nav .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
@@ -561,6 +600,7 @@ footer .wrap{display:grid;gap:22px}
       <a href="#buy" data-i18n="nav.buy">Buy</a>
       <a href="#missions" data-i18n="nav.missions">Missions</a>
       <a href="#crew">Join</a>
+      <a href="#most-wanted">Most Wanted</a>
       <a href="#jeu" data-i18n="nav.game">The heist</a>
     </div>
     <div class="nav-tools">
@@ -964,6 +1004,33 @@ footer .wrap{display:grid;gap:22px}
     </div>
   </section>
 
+  <section class="block" id="most-wanted">
+    <div class="wrap">
+      <div class="sec-head rv">
+        <span class="hud" id="mw-season">Season 1</span>
+        <h2>Most Wanted</h2>
+        <p>Weekly challenges for the crew. Top the board, get your name on the wall, and push the whole crew toward the next unlock.</p>
+      </div>
+      <div class="mw-grid">
+        <div class="panel rv">
+          <div class="panel-head"><div><h3>The board</h3><p id="mw-board-sub">This week's top 10. Ranked by the team from the proofs posted in Telegram.</p></div></div>
+          <div id="mw-board"></div>
+        </div>
+        <div class="mw-side">
+          <div class="panel rv chal" id="mw-chal"></div>
+          <div class="panel rv">
+            <div class="panel-head"><div><h3>Crew goals</h3><p>Everyone plays, everyone unlocks.</p></div></div>
+            <ul class="goals" id="mw-goals"></ul>
+          </div>
+        </div>
+      </div>
+      <div class="panel rv" id="mw-hall-wrap" style="margin-top:22px" hidden>
+        <div class="panel-head"><div><h3>Hall of fame</h3><p>Past winners. Respect +.</p></div></div>
+        <div class="hall" id="mw-hall"></div>
+      </div>
+    </div>
+  </section>
+
   <div class="tape rev" aria-hidden="true"><div><span id="tape2"></span></div></div>
   <section class="block" id="jeu">
     <div class="wrap">
@@ -1033,6 +1100,33 @@ const CONFIG = {
   LAUNCH_AT: '2026-11-19T00:00:00+01:00',     // exact launch time (Paris) once announced
   DEV_BUY_PCT: '',                            // total % of supply bought by the team at launch, e.g. '3.5'
   STICKERS_URL: 'https://t.me/addstickers/MemesTheftAuto'                            // Telegram sticker pack link, e.g. https://t.me/addstickers/MemesTheftAuto
+};
+/* =====================================================================
+   MOST WANTED: edit this block to update the leaderboard, the weekly
+   challenge and the crew goals. Nothing else to touch.
+   ===================================================================== */
+const MOST_WANTED = {
+  SEASON: 'Season 1',
+  CHALLENGE: {
+    title: 'Heist of the week',
+    what: 'Highest score in the heist game below.',
+    proof: 'Post a screen recording of your run in the Telegram with #MostWanted.',
+    prize: 'Top 3 win $MTA from the team bag.',
+    starts: '2026-11-19T00:00:00+01:00',
+    ends: '2026-11-25T21:00:00+01:00'
+  },
+  ROTATION: ['Heist of the week', 'Most Wanted poster', 'Meme & edit contest', 'Raid master'],
+  BOARD: [
+    // Top 10 of the week, best first. Example: { name: '@handle', score: '$48,250', note: 'Pengie · 7 missions' },
+  ],
+  GOALS: [
+    { label: 'Crew PFPs on X', now: 0, target: 100,  unlock: 'Rugsy Jack, episode 2' },
+    { label: 'Holders',        now: 0, target: 500,  unlock: 'A new crew member revealed' },
+    { label: 'Holders',        now: 0, target: 1000, unlock: 'A new level in the heist game' }
+  ],
+  HALL: [
+    // Past winners, newest first. Example: { week: 'Week 1', name: '@handle', what: 'Heist of the week · $61,900' },
+  ]
 };
 const CONTRACT = CONFIG.CONTRACT.trim();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -2189,6 +2283,41 @@ tickCountdown(true);
     location.href = app;
     setTimeout(() => { document.removeEventListener('visibilitychange', hide); if (!left && document.visibilityState === 'visible') location.href = web; }, 1600);
   });
+  /* ---- Most Wanted ---- */
+  (() => {
+    const M = MOST_WANTED, esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+    document.getElementById('mw-season').textContent = M.SEASON;
+    const tg = CONFIG.TG_URL || '#crew';
+    const rankStars = i => i === 0 ? '★★★★★ Most wanted' : i < 3 ? '★★★★' : i < 6 ? '★★★' : '★★';
+    const board = document.getElementById('mw-board');
+    if (M.BOARD.length){
+      board.innerHTML = `<ol class="board-list">${M.BOARD.slice(0, 10).map((r, i) => `<li class="${i === 0 ? 'top' : ''}"><span class="rk">${i + 1}</span><span class="who"><b>${esc(r.name)}</b><small>${rankStars(i)}${r.note ? ' · ' + esc(r.note) : ''}</small></span><span class="sc">${esc(r.score)}</span></li>`).join('')}</ol>`;
+    } else {
+      board.innerHTML = `<div class="board-empty"><div class="ghost-rows" aria-hidden="true"><span></span><span></span><span></span></div>
+        <p>The board is empty for now. The first challenge opens at launch: be the first name on it.</p>
+        <div class="studio-actions"><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a><a class="btn btn-ghost btn-sm" href="${esc(tg)}" target="_blank" rel="noopener">Post your proof</a></div></div>`;
+    }
+    const C = M.CHALLENGE, chal = document.getElementById('mw-chal');
+    const fmtLeft = ms => { const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return d > 0 ? `${d}d ${h}h left` : h > 0 ? `${h}h ${m}m left` : `${m}m left`; };
+    const renderChal = () => {
+      const now = Date.now(), st = new Date(C.starts).getTime(), en = new Date(C.ends).getTime();
+      const when = now < st ? 'Opens at launch' : now < en ? fmtLeft(en - now) : 'Closed · results soon';
+      chal.innerHTML = `<span class="hud" style="color:var(--sunset)">This week's challenge</span><h3>${esc(C.title)}</h3><span class="when">${when}</span>
+        <dl><dt>Goal</dt><dd>${esc(C.what)}</dd><dt>Proof</dt><dd>${esc(C.proof)}</dd><dt>Prize</dt><dd>${esc(C.prize)}</dd></dl>
+        <div class="rotation" aria-label="Challenge rotation">${M.ROTATION.map(r => `<span class="${r === C.title ? 'on' : ''}">${esc(r)}</span>`).join('')}</div>`;
+    };
+    renderChal(); setInterval(renderChal, 60000);
+    document.getElementById('mw-goals').innerHTML = M.GOALS.map(g => {
+      const p = Math.max(0, Math.min(100, g.now / g.target * 100)), done = g.now >= g.target;
+      return `<li class="${done ? 'done' : ''}"><div class="row"><b>${esc(g.label)}</b><span>${g.now.toLocaleString('en-US')} / ${g.target.toLocaleString('en-US')}</span></div>
+        <div class="track" role="progressbar" aria-label="${esc(g.label)}" aria-valuemin="0" aria-valuemax="${g.target}" aria-valuenow="${g.now}"><i style="--p:${p}%"></i></div>
+        <span class="unl">${done ? '✓ Unlocked: ' : '🔒 Unlocks: '}${esc(g.unlock)}</span></li>`;
+    }).join('');
+    if (M.HALL.length){
+      document.getElementById('mw-hall-wrap').hidden = false;
+      document.getElementById('mw-hall').innerHTML = M.HALL.map(h => `<div><small>${esc(h.week)}</small><b>${esc(h.name)}</b><span>${esc(h.what)}</span></div>`).join('');
+    }
+  })();
 })();
 })();
 </script>
