@@ -1026,7 +1026,7 @@ footer .wrap{display:grid;gap:22px}
       </div>
       <div class="mw-grid">
         <div class="panel rv">
-          <div class="panel-head"><div><h3>The board</h3><p id="mw-board-sub">This week's top 10. Ranked by the team from the proofs posted in Telegram.</p></div></div>
+          <div class="panel-head"><div><h3>The board</h3><p id="mw-board-sub">This week's top 10. A score shows here as soon as a mod checks the proof.</p></div><a class="btn btn-gold btn-sm" id="mw-submit" href="#most-wanted">Submit your score</a></div>
           <div id="mw-board"></div>
         </div>
         <div class="mw-side">
@@ -1121,6 +1121,10 @@ const CONFIG = {
    ===================================================================== */
 const MOST_WANTED = {
   SEASON: 'Season 1',
+  // Live board: the Google Sheet of the score form, published as CSV (File > Share > Publish to web > CSV).
+  // Rows show on the board as soon as a mod types 'yes' in the 'Approved' column. Leave '' to use BOARD below.
+  SCORES_CSV_URL: '',
+  SCORE_FORM_URL: '',   // the Google Form where players submit their score + proof link
   CHALLENGE: {
     title: 'Heist of the week',
     what: 'Highest score in the heist game below.',
@@ -2301,12 +2305,45 @@ tickCountdown(true);
     const tg = CONFIG.TG_URL || '#crew';
     const rankStars = i => i === 0 ? '★★★★★ Most wanted' : i < 3 ? '★★★★' : i < 6 ? '★★★' : '★★';
     const board = document.getElementById('mw-board');
-    if (M.BOARD.length){
-      board.innerHTML = `<ol class="board-list">${M.BOARD.slice(0, 10).map((r, i) => `<li class="${i === 0 ? 'top' : ''}"><span class="rk">${i + 1}</span><span class="who"><b>${esc(r.name)}</b><small>${rankStars(i)}${r.note ? ' · ' + esc(r.note) : ''}</small></span><span class="sc">${esc(r.score)}</span></li>`).join('')}</ol>`;
-    } else {
-      board.innerHTML = `<div class="board-empty"><div class="ghost-rows" aria-hidden="true"><span></span><span></span><span></span></div>
-        <p>The board is empty for now. The first challenge opens at launch: be the first name on it.</p>
-        <div class="studio-actions"><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a><a class="btn btn-ghost btn-sm" href="${esc(tg)}" target="_blank" rel="noopener">Post your proof</a></div></div>`;
+    const submitUrl = M.SCORE_FORM_URL || tg;
+    const sub = document.getElementById('mw-submit'); sub.href = submitUrl; if (/^https?:/.test(submitUrl)){ sub.target = '_blank'; sub.rel = 'noopener'; }
+    const money = v => '$' + Math.round(v).toLocaleString('en-US');
+    const renderBoard = (rows, live) => {
+      if (rows.length){
+        board.innerHTML = `<ol class="board-list">${rows.slice(0, 10).map((r, i) => `<li class="${i === 0 ? 'top' : ''}"><span class="rk">${i + 1}</span><span class="who"><b>${esc(r.name)}</b><small>${rankStars(i)}${r.note ? ' · ' + esc(r.note) : ''}</small></span><span class="sc">${esc(r.score)}</span></li>`).join('')}</ol>`
+          + (live ? `<p class="fine" style="margin-top:12px">Live from the crew sheet · updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>` : '');
+      } else {
+        board.innerHTML = `<div class="board-empty"><div class="ghost-rows" aria-hidden="true"><span></span><span></span><span></span></div>
+          <p>No approved score yet. Play the heist, record your run and submit it: once a mod checks it, you're on the board.</p>
+          <div class="studio-actions"><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a><a class="btn btn-ghost btn-sm" href="${esc(submitUrl)}" target="_blank" rel="noopener">Submit your score</a></div></div>`;
+      }
+    };
+    // minimal CSV parser (quoted fields, commas, newlines)
+    const parseCSV = txt => { const rows = []; let row = [], f = '', q = false;
+      for (let i = 0; i < txt.length; i++){ const c = txt[i];
+        if (q){ if (c === '"'){ if (txt[i + 1] === '"'){ f += '"'; i++; } else q = false; } else f += c; }
+        else if (c === '"') q = true; else if (c === ','){ row.push(f); f = ''; } else if (c === '\n' || c === '\r'){ if (c === '\r' && txt[i + 1] === '\n') i++; row.push(f); rows.push(row); row = []; f = ''; } else f += c; }
+      if (f !== '' || row.length){ row.push(f); rows.push(row); } return rows; };
+    const fromSheet = txt => {
+      const [head, ...rows] = parseCSV(txt); if (!head) return [];
+      const col = re => head.findIndex(h => re.test(h));
+      const ci = { name: col(/@|handle|name|pseudo/i), score: col(/score/i), ok: col(/approv|valid|ok\b|check/i), note: col(/character|perso|crew|robber/i) };
+      if (ci.name < 0 || ci.score < 0) return [];
+      const best = new Map();
+      for (const r of rows){
+        if (ci.ok >= 0 && !/^\s*(yes|oui|ok|y|x|✓|✅|true|1)\s*$/i.test(r[ci.ok] || '')) continue;
+        const name = (r[ci.name] || '').trim(), score = parseInt(String(r[ci.score] || '').replace(/[^0-9]/g, ''), 10);
+        if (!name || !score) continue;
+        const key = name.toLowerCase().replace(/^@/, '');
+        if (!best.has(key) || best.get(key).v < score) best.set(key, { name: name.startsWith('@') ? name : '@' + name, v: score, note: ci.note >= 0 ? (r[ci.note] || '').trim() : '' });
+      }
+      return [...best.values()].sort((a, b) => b.v - a.v).map(r => ({ name: r.name, score: money(r.v), note: r.note }));
+    };
+    renderBoard(M.BOARD, false);
+    if (M.SCORES_CSV_URL){
+      const load = () => fetch(M.SCORES_CSV_URL + (M.SCORES_CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
+        .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => renderBoard(fromSheet(txt), true)).catch(() => {});
+      load(); setInterval(load, 120000);
     }
     const C = M.CHALLENGE, chal = document.getElementById('mw-chal');
     const fmtLeft = ms => { const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return d > 0 ? `${d}d ${h}h left` : h > 0 ? `${h}h ${m}m left` : `${m}m left`; };
