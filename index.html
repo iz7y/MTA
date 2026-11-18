@@ -1123,8 +1123,8 @@ const MOST_WANTED = {
   SEASON: 'Season 1',
   // Live board: the Google Sheet of the score form, published as CSV (File > Share > Publish to web > CSV).
   // Rows show on the board as soon as a mod types 'yes' in the 'Approved' column. Leave '' to use BOARD below.
-  SCORES_CSV_URL: '',
-  SCORE_FORM_URL: '',   // the Google Form where players submit their score + proof link
+  SCORES_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVqTCjXJ-yzYiIGEiEvukOd9lntpAUvL6vnXdjorX7JrjfEVTnqvC3Sh3iZxPqJTJdjJpM50QBX6kN/pub?gid=859703821&single=true&output=csv',
+  SCORE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfYo_Na8nXf4n54gPfcPXU_QaN7tJvRy6Yj2FJvUWsAgpD_AQ/viewform',   // the Google Form where players submit their score + proof link
   CHALLENGE: {
     title: 'Heist of the week',
     what: 'Highest score in the heist game below.',
@@ -2331,7 +2331,7 @@ tickCountdown(true);
       if (ci.name < 0 || ci.score < 0) return [];
       const best = new Map();
       for (const r of rows){
-        if (ci.ok >= 0 && !/^\s*(yes|oui|ok|y|x|✓|✅|true|1)\s*$/i.test(r[ci.ok] || '')) continue;
+        if (ci.ok < 0 || !/^\s*(yes|oui|ok|y|x|✓|✅|true|1)\s*$/i.test(r[ci.ok] || '')) continue;   // mods approve each row
         const name = (r[ci.name] || '').trim(), score = parseInt(String(r[ci.score] || '').replace(/[^0-9]/g, ''), 10);
         if (!name || !score) continue;
         const key = name.toLowerCase().replace(/^@/, '');
