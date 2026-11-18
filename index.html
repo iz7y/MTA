@@ -1096,8 +1096,8 @@ footer .wrap{display:grid;gap:22px}
     <div class="foot-top">
       <a class="brand" href="#top"><img src="assets/logo-192.png" alt="" width="40" height="40"><span>Memes Theft Auto</span></a>
       <div class="socials">
-        <a class="btn btn-ghost btn-sm" id="soc-x" href="#top" aria-disabled="true" data-i18n="soc.x">X · soon</a>
-        <a class="btn btn-ghost btn-sm" id="soc-tg" href="#top" aria-disabled="true" data-i18n="soc.tg">Telegram · soon</a>
+        <a class="btn btn-ghost btn-sm" id="soc-x" href="https://x.com/SolanaMta" target="_blank" rel="noopener">X · @SolanaMta</a>
+        <a class="btn btn-ghost btn-sm" id="soc-tg" href="https://t.me/mtagta6" target="_blank" rel="noopener">Telegram · @mtagta6</a>
         <a class="btn btn-ghost btn-sm" id="soc-dex" href="#top" aria-disabled="true" data-i18n="soc.dex">DexScreener · 19.11</a>
       </div>
     </div>
@@ -1381,7 +1381,7 @@ function renderLinks(){
     row(t('off.ca'), SOLSCAN, CONTRACT ? short(CONTRACT) : t('off.ca.soon'))
   ].join('');
   if (CONFIG.X_URL) document.getElementById('hs-x').href = CONFIG.X_URL; if (CONFIG.TG_URL) document.getElementById('hs-tg').href = CONFIG.TG_URL;
-  setLink('soc-x', CONFIG.X_URL, 'X'); setLink('soc-tg', CONFIG.TG_URL, 'Telegram'); setLink('soc-dex', DEX, 'DexScreener');
+  setLink('soc-x', CONFIG.X_URL, 'X · @SolanaMta'); setLink('soc-tg', CONFIG.TG_URL, 'Telegram · @mtagta6'); setLink('soc-dex', DEX, 'DexScreener');
   const dv = document.getElementById('tok-dev');
   if (CONFIG.DEV_BUY_PCT){ dv.removeAttribute('data-i18n'); dv.textContent = t('tok.devval').replace('{p}', CONFIG.DEV_BUY_PCT); }
   if (CONTRACT){
