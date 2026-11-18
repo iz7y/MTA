@@ -1048,8 +1048,8 @@ footer .wrap{display:grid;gap:22px}
               <p>WASTED, BUSTED, MISSION PASSED and the whole crew, plus an animated pack. Made for the Telegram chat, ready for your replies on X.</p>
             </div>
             <div class="studio-actions">
-              <a class="btn btn-gold btn-sm" id="stk-tg" href="#stickers" aria-disabled="true">Telegram pack · soon</a>
-              <a class="btn btn-gold btn-sm" id="stk-anim" href="#stickers" hidden>Animated pack</a>
+              <a class="btn btn-gold btn-sm" id="stk-tg" href="https://t.me/addstickers/MemesTheftAuto" target="_blank" rel="noopener">Add to Telegram</a>
+              <a class="btn btn-gold btn-sm" id="stk-anim" href="https://t.me/addstickers/AnimatedMTA" target="_blank" rel="noopener">Animated pack</a>
               <a class="btn btn-ghost btn-sm" href="assets/stickers/mta-stickers.zip" download>Download all (.zip)</a>
             </div>
           </div>
@@ -2452,18 +2452,7 @@ tickCountdown(true);
       t.style.cssText = 'position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:var(--gold);color:var(--ink);font:700 .85rem var(--f-hud);letter-spacing:.06em;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
       t.textContent = msg; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, 2200); }
   })();
-  /* ---- Telegram links: on phones, open the Telegram app directly (t.me pages often stall inside the X / Telegram in-app browsers) ---- */
-  const toTg = u => { const m = u.match(/^https:\/\/t\.me\/(addstickers\/)?([A-Za-z0-9_]+)\/?$/); return m ? (m[1] ? 'tg://addstickers?set=' + m[2] : 'tg://resolve?domain=' + m[2]) : null; };
-  document.addEventListener('click', e => {
-    const a = e.target.closest && e.target.closest('a[href^="https://t.me/"]');
-    if (!a || !matchMedia('(pointer:coarse)').matches) return;
-    const app = toTg(a.href); if (!app) return;
-    e.preventDefault();
-    const web = a.href; let left = false; const hide = () => { left = true; };
-    document.addEventListener('visibilitychange', hide, { once: true });
-    location.href = app;
-    setTimeout(() => { document.removeEventListener('visibilitychange', hide); if (!left && document.visibilityState === 'visible') location.href = web; }, 1600);
-  });
+
   /* ---- Most Wanted ---- */
   (() => {
     const M = MOST_WANTED, esc = v => String(v ?? '').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
