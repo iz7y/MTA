@@ -1635,6 +1635,7 @@ let charKey = 'pumpchi';
 try { const c = localStorage.getItem('mta-char'); if (CHARS[c]) charKey = c; } catch (e) {}
 let board = []; try { board = JSON.parse(localStorage.getItem('mta-board') || '[]').slice(0, 5); } catch (e) { board = []; }
 const best = () => board.length ? board[0].s : 0;
+Game.bestRun = () => board[0] || null;
 const bestEl = document.getElementById('best');
 const money = n => '$' + Math.floor(n).toLocaleString('en-US');
 function renderBoard(){
@@ -2567,18 +2568,28 @@ tickCountdown(true);
     hIn.addEventListener('change', () => { hIn.value = clean(hIn.value); try { localStorage.setItem('mta-handle', hIn.value); } catch (e) {} hSt.textContent = hIn.value ? `Saved. Your next personal best goes on the board as ${hIn.value}.` : 'Set your @ and every new personal best goes on the board automatically.'; });
     const A = M.AUTO_SUBMIT || {}, formAction = (M.SCORE_FORM_URL || '').replace(/\/viewform.*$/, '/formResponse');
     const canPost = A.name && A.score && formAction.includes('/formResponse');
+    const post = (h, score, char, proof) => {
+      const body = new URLSearchParams(); body.set(A.name, h); body.set(A.score, String(score)); if (A.character) body.set(A.character, CHAR_NAME[char] || 'Pumpchi'); if (A.proof) body.set(A.proof, proof);
+      return fetch(formAction, { method: 'POST', mode: 'no-cors', body }).then(() => { try { localStorage.setItem('mta-sent:' + h.toLowerCase(), String(score)); } catch (e) {} });
+    };
+    const sentFor = h => { try { return +(localStorage.getItem('mta-sent:' + h.toLowerCase()) || 0); } catch (e) { return 0; } };
+    // send this device's best score if the board doesn't have it yet (e.g. played before setting the @)
+    const syncBest = () => {
+      const h = clean(hIn.value || ''), br = Game.bestRun(), b = br ? br.s : 0; if (!h || !b || b <= sentFor(h)) return;
+      localRows = localRows.filter(r => r.name.toLowerCase() !== h.toLowerCase()).concat({ name: h, v: b, note: CHAR_NAME[br.c], mine: true }); renderBoard();
+      if (!canPost) return;
+      post(h, b, br.c, 'best run on this device').then(() => { hSt.textContent = `Your best (${money(b)}) is on its way to the board as ${h}.`; }).catch(() => {});
+    };
+    hIn.addEventListener('change', syncBest);
+    setTimeout(syncBest, 2500);
     Game.onRun = run => {
-      const h = clean(hIn.value || ''); if (!h || run.score <= 0) { if (run.score > 0 && !h) hSt.textContent = 'Nice run! Add your @ above the controls to put scores like this on the board.'; return; }
-      let sent = 0; try { sent = +(localStorage.getItem('mta-sent:' + h.toLowerCase()) || 0); } catch (e) {}
-      if (run.score <= sent) return;
+      const h = clean(hIn.value || ''); if (!h || run.score <= 0) { if (run.score > 0 && !h) hSt.textContent = 'Nice run! Add your @ in the box under the game to put scores like this on the board.'; return; }
+      if (run.score <= sentFor(h)) return;
       localRows = localRows.filter(r => r.name.toLowerCase() !== h.toLowerCase()).concat({ name: h, v: run.score, note: CHAR_NAME[run.char], mine: true }); renderBoard();
       if (!canPost) { hSt.textContent = 'Board sync is being switched on. Your best is saved on this device.'; return; }
-      const proof = `auto run · ${Math.round(run.t)}s · ${Math.round(run.dist)} m · ${run.missions} missions · combo x${run.combo}`;
-      const body = new URLSearchParams(); body.set(A.name, h); body.set(A.score, String(run.score)); if (A.character) body.set(A.character, CHAR_NAME[run.char]); if (A.proof) body.set(A.proof, proof);
-      fetch(formAction, { method: 'POST', mode: 'no-cors', body }).then(() => {
-        try { localStorage.setItem('mta-sent:' + h.toLowerCase(), String(run.score)); } catch (e) {}
-        hSt.textContent = `New personal best sent to the board: ${money(run.score)} as ${h}.`;
-      }).catch(() => { hSt.textContent = "Couldn't reach the board right now. Your next run will try again."; });
+      post(h, run.score, run.char, `auto run · ${Math.round(run.t)}s · ${Math.round(run.dist)} m · ${run.missions} missions · combo x${run.combo}`)
+        .then(() => { hSt.textContent = `New personal best sent to the board: ${money(run.score)} as ${h}. It shows for everyone within a few minutes.`; })
+        .catch(() => { hSt.textContent = "Couldn't reach the board right now. It will retry next time you open the site."; });
     };
     const C = M.CHALLENGE, chal = document.getElementById('mw-chal');
     const fmtLeft = ms => { const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return d > 0 ? `${d}d ${h}h left` : h > 0 ? `${h}h ${m}m left` : `${m}m left`; };
