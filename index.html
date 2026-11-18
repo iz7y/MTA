@@ -984,10 +984,11 @@ footer .wrap{display:grid;gap:22px}
           <div class="panel-head">
             <div>
               <h3>The sticker pack</h3>
-              <p>WASTED, BUSTED, MISSION PASSED and the whole crew. Made for the Telegram chat, ready for your replies on X.</p>
+              <p>WASTED, BUSTED, MISSION PASSED and the whole crew, plus an animated pack. Made for the Telegram chat, ready for your replies on X.</p>
             </div>
             <div class="studio-actions">
               <a class="btn btn-gold btn-sm" id="stk-tg" href="#stickers" aria-disabled="true">Telegram pack · soon</a>
+              <a class="btn btn-gold btn-sm" id="stk-anim" href="#stickers" hidden>Animated pack</a>
               <a class="btn btn-ghost btn-sm" href="assets/stickers/mta-stickers.zip" download>Download all (.zip)</a>
             </div>
           </div>
@@ -1111,6 +1112,7 @@ const CONFIG = {
   SITE_URL: 'https://iz7y.github.io/MTA/',                               // public address of the site once hosted
   LAUNCH_AT: '2026-11-19T00:00:00+01:00',     // exact launch time (Paris) once announced
   DEV_BUY_PCT: '',                            // total % of supply bought by the team at launch, e.g. '3.5'
+  STICKERS_ANIM_URL: 'https://t.me/addstickers/AnimatedMTA',  // animated (video) sticker pack
   STICKERS_URL: 'https://t.me/addstickers/MemesTheftAuto'                            // Telegram sticker pack link, e.g. https://t.me/addstickers/MemesTheftAuto
 };
 /* =====================================================================
@@ -2077,6 +2079,8 @@ tickCountdown(true);
   grid.innerHTML = STICKERS.map(n => `<li><img src="assets/stickers/${n}.webp" alt="${n.slice(3).replace(/_/g, ' ')}" width="512" height="512" loading="lazy" decoding="async"></li>`).join('');
   const tg = document.getElementById('stk-tg');
   if (CONFIG.STICKERS_URL) { tg.href = CONFIG.STICKERS_URL; tg.target = '_blank'; tg.rel = 'noopener'; tg.removeAttribute('aria-disabled'); tg.textContent = 'Add to Telegram'; }
+  const ta = document.getElementById('stk-anim');
+  if (CONFIG.STICKERS_ANIM_URL) { ta.href = CONFIG.STICKERS_ANIM_URL; ta.target = '_blank'; ta.rel = 'noopener'; ta.hidden = false; }
 
   const SITE = CONFIG.SITE_URL || 'https://iz7y.github.io/MTA/';
   document.getElementById('pfp-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent("Just joined the $MTA crew ★★★★★\nGet your wanted PFP: " + SITE + '#crew');
