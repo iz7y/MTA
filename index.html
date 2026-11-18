@@ -2060,7 +2060,7 @@ tickCountdown(true);
 
 /* ---------------- Join the crew: wanted PFP studio + sticker pack ---------------- */
 (() => {
-  const STICKERS = ['01_logo', '02_pumpchi_in_early', '03_pengie_bag_secured', '04_talljr_im_outside', '05_rugsy_trust_me_bro', '06_wasted', '07_mission_passed', '08_busted', '09_five_stars', '10_rugs_not_accepted', '11_heist_is_on', '12_not_selling', '13_send_it', '14_gm_crew', '15_bag_mta', '16_pumpchi_sniped', '17_pengie_liquidity_plz', '18_talljr_prepare_the_jet', '19_rugsy_collected', '20_lfg', '21_buy_the_dip', '22_on_the_run', '23_sirens_on', '24_respect', '25_wanted', '26_chart_go_up'];
+  const STICKERS = ['01_logo', '02_pumpchi_in_early', '03_pengie_bag_secured', '04_talljr_im_outside', '05_rugsy_trust_me_bro', '06_wasted', '07_mission_passed', '08_busted', '09_five_stars', '10_rugs_not_accepted', '11_heist_is_on', '12_not_selling', '13_send_it', '14_gm_crew', '15_bag_mta', '16_pumpchi_sniped', '17_pengie_liquidity_plz', '18_talljr_prepare_the_jet', '19_rugsy_collected', '20_lfg', '21_buy_the_dip', '22_on_the_run', '23_sirens_on', '24_respect', '25_wanted', '26_chart_go_up', '27_the_crew', '28_pumpchi_told_ya', '29_pengie_in_the_bag', '30_talljr_full_send', '31_rugsy_ngmi', '32_hold_the_line', '33_no_paper_hands', '34_brb_robbing_a_bank', '35_gn_crew', '36_fake_ca_busted', '37_admins_never_dm', '38_one_mta'];
   const grid = document.getElementById('sticker-grid');
   grid.innerHTML = STICKERS.map(n => `<li><img src="assets/stickers/${n}.webp" alt="${n.slice(3).replace(/_/g, ' ')}" width="512" height="512" loading="lazy" decoding="async"></li>`).join('');
   const tg = document.getElementById('stk-tg');
