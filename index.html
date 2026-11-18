@@ -162,6 +162,44 @@ p{margin:0}
 .hall b{display:block;font:600 1rem var(--f-hud);color:var(--gold);margin-top:4px}
 .hall span{font-size:.9rem;color:var(--muted)}
 
+/* ---------- RUGSY TRACKER + PRESALE BAIT ---------- */
+.tracker{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:clamp(18px,3vw,36px);margin-top:clamp(28px,4vw,48px)}
+@media (max-width:860px){.tracker{grid-template-columns:1fr}}
+.tracker h3{font-size:var(--step-2)}
+.trk-status{display:inline-flex;align-items:center;gap:8px;font:700 .8rem var(--f-hud);letter-spacing:.14em;text-transform:uppercase;color:#fff;background:#c0201f;padding:6px 12px;border-radius:3px;width:fit-content}
+.trk-status::before{content:"";width:8px;height:8px;border-radius:50%;background:#fff;animation:pulse 1.2s ease-in-out infinite}
+.trk-facts{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px 16px;margin:16px 0 0}
+.trk-facts dt{font:700 .72rem var(--f-hud);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);padding-top:3px}
+.trk-facts dd{margin:0;color:var(--paper)}
+.trk-facts dd b{font-family:var(--f-hud);color:var(--gold);font-variant-numeric:tabular-nums}
+.episodes{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.episodes li{display:grid;grid-template-columns:64px minmax(0,1fr) auto;gap:14px;align-items:center;padding:12px 14px;background:rgba(20,10,31,.5);border:1px solid var(--dusk-2);border-radius:10px}
+.episodes .ep{font:400 1.2rem var(--f-display);color:var(--muted)}
+.episodes b{display:block;color:var(--paper);font-weight:600}
+.episodes small{color:var(--muted)}
+.episodes li.locked{opacity:.75}
+.episodes li.locked .ep{color:var(--dusk-2)}
+.bait{position:fixed;z-index:70;left:max(14px,env(safe-area-inset-left,0px));bottom:calc(14px + env(safe-area-inset-bottom,0px));max-width:min(360px,calc(100vw - 28px));display:flex;align-items:center;gap:10px;padding:10px 12px 10px 14px;border-radius:10px;background:linear-gradient(135deg,#ff2d55,#ff9a3c);color:#fff;box-shadow:0 14px 40px rgba(0,0,0,.5);transform:translateY(140%);transition:transform .45s cubic-bezier(.2,.9,.2,1.2)}
+.bait.on{transform:none}
+.bait button.go{all:unset;cursor:pointer;display:grid;gap:2px;min-width:0}
+.bait .t1{font:400 1rem var(--f-display);letter-spacing:.02em;animation:baitwiggle 1.6s ease-in-out infinite}
+.bait .t2{font:700 .72rem var(--f-hud);letter-spacing:.08em;text-transform:uppercase;opacity:.9}
+.bait .x{all:unset;cursor:pointer;flex:none;width:28px;height:28px;display:grid;place-items:center;border-radius:50%;background:rgba(0,0,0,.25);font:700 .9rem var(--f-hud)}
+@keyframes baitwiggle{0%,100%{transform:none}50%{transform:rotate(-1.5deg) scale(1.03)}}
+.busted{position:fixed;inset:0;z-index:90;display:grid;place-items:center;padding:20px;background:rgba(10,4,20,.82);backdrop-filter:blur(6px)}
+.busted[hidden]{display:none}
+.busted-card{position:relative;width:min(460px,100%);text-align:center;background:var(--dusk);border:2px solid #3b7bff;border-radius:16px;padding:28px 22px 22px;box-shadow:0 0 0 6px rgba(255,59,78,.25),0 30px 80px rgba(0,0,0,.6);animation:bustin .5s cubic-bezier(.2,.9,.2,1.2)}
+@keyframes bustin{from{transform:scale(.6) rotate(-6deg);opacity:0}to{transform:none;opacity:1}}
+.busted-card .bust-stamp{display:inline-block;font:400 clamp(2.4rem,9vw,3.4rem) var(--f-display);color:#fff;background:#3b7bff;padding:2px 18px;border-radius:6px;transform:rotate(-4deg);box-shadow:0 6px 0 #1b3f99}
+.busted-card img{width:150px;height:150px;margin:14px auto 6px;display:block}
+.busted-card p{color:var(--muted);margin-top:8px}
+.busted-card p b{color:var(--paper)}
+.busted-card .studio-actions{justify-content:center;margin-top:16px}
+.rugsy-peek{position:fixed;z-index:65;right:0;bottom:22%;width:84px;transform:translateX(100%);transition:transform .5s cubic-bezier(.2,.9,.2,1);cursor:pointer;border:0;background:none;padding:0}
+.rugsy-peek.on{transform:translateX(38%) rotate(-12deg)}
+.rugsy-peek img{width:100%;display:block;filter:drop-shadow(0 6px 14px rgba(0,0,0,.5))}
+@media (prefers-reduced-motion:reduce){.bait .t1{animation:none}}
+
 /* ---------- NAV ---------- */
 .nav{position:sticky;top:env(safe-area-inset-top,0px);z-index:50;background:color-mix(in srgb,var(--night) 82%,transparent);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
 .nav .wrap{display:flex;align-items:center;gap:20px;padding-block:10px}
@@ -801,6 +839,25 @@ footer .wrap{display:grid;gap:22px}
         </div>
       </div>
     </div>
+    <div class="wrap">
+      <div class="tracker">
+        <div class="panel rv">
+          <span class="hud" style="color:var(--siren-r)">Rugsy tracker</span>
+          <h3 style="margin:6px 0 12px">Where's Rugsy?</h3>
+          <span class="trk-status" id="trk-status">On the run</span>
+          <dl class="trk-facts">
+            <dt>Last seen</dt><dd id="trk-seen">Selling an "exclusive presale" behind the marina</dd>
+            <dt>Rugs pulled</dt><dd><b id="trk-rugs">47</b> <span style="color:var(--muted)">(and counting)</span></dd>
+            <dt>Collected by you</dt><dd><b id="trk-you">0</b> <span style="color:var(--muted)">times in the heist game</span></dd>
+            <dt>Known alias</dt><dd>"Trust me bro"</dd>
+          </dl>
+        </div>
+        <div class="panel rv">
+          <div class="panel-head"><div><h3>The Rugsy Jack files</h3><p>His story, episode by episode. The crew decides what happens next.</p></div></div>
+          <ol class="episodes" id="trk-eps"></ol>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="block" id="videos">
@@ -1054,7 +1111,7 @@ footer .wrap{display:grid;gap:22px}
       <div class="sec-head rv">
         <span class="hud" data-i18n="g.eyebrow">Bonus</span>
         <h2 data-i18n="g.title">The heist</h2>
-        <p data-i18n="g.lede">Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro.</p>
+        <p data-i18n="g.lede">Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro, and when Rugsy Jack shows up with the bag: collect him.</p>
       </div>
       <div class="game-shell rv zoom">
         <div class="game-bar">
@@ -1091,6 +1148,21 @@ footer .wrap{display:grid;gap:22px}
   </section>
 </main>
 
+<div class="bait" id="bait" role="complementary" aria-label="Advert" hidden>
+  <button type="button" class="go" id="bait-go"><span class="t1">🔥 EXCLUSIVE $MTA PRESALE · 90% OFF</span><span class="t2">Ends in <span id="bait-time">04:59</span> · by Rugsy Jack</span></button>
+  <button type="button" class="x" id="bait-x" aria-label="Close">✕</button>
+</div>
+<div class="busted" id="busted" role="dialog" aria-modal="true" aria-labelledby="busted-title" hidden>
+  <div class="busted-card">
+    <span class="bust-stamp" id="busted-title">BUSTED</span>
+    <img src="assets/stickers/31_rugsy_ngmi.webp" alt="Rugsy Jack, caught" width="150" height="150">
+    <h3 style="font-size:var(--step-1)">You just got Rugsy'd.</h3>
+    <p><b>There is no presale. There never was.</b> $MTA is a fair launch on Pump.fun. The contract is only on this site, our X and our Telegram, and admins never DM first.</p>
+    <div class="studio-actions"><button type="button" class="btn btn-gold btn-sm" id="busted-ok">Got it</button><a class="btn btn-ghost btn-sm" id="busted-share" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Confess on X</a></div>
+  </div>
+</div>
+<button type="button" class="rugsy-peek" id="rugsy-peek" aria-label="Rugsy Jack is hiding here" hidden><img src="assets/sprite-rugsy.webp" alt=""></button>
+
 <footer>
   <div class="wrap">
     <div class="foot-top">
@@ -1102,7 +1174,7 @@ footer .wrap{display:grid;gap:22px}
       </div>
     </div>
     <p class="disclaimer" data-i18n="foot.disc">$MTA is a parody memecoin with no intrinsic value and no promise of returns. Not affiliated with Rockstar Games, Take-Two Interactive or any video game publisher; the characters and the Kingsegg brand are parodies. Nothing on this site is financial advice. Crypto is very risky: only put in what you can afford to lose.</p>
-    <p class="disclaimer">© 2026 Memes Theft Auto</p>
+    <p class="disclaimer">© 2026 Memes Theft Auto · Rugsy Jack is not affiliated with $MTA. He wishes he was.</p>
   </div>
 </footer>
 
@@ -1159,6 +1231,17 @@ const MOST_WANTED = {
     // Past winners, newest first. Example: { week: 'Week 1', name: '@handle', what: 'Heist of the week · $61,900' },
   ]
 };
+/* Rugsy Jack tracker: update status, sighting and episodes here. */
+const RUGSY = {
+  STATUS: 'On the run',            // e.g. 'On the run', 'Spotted', 'Collected'
+  LAST_SEEN: 'Selling an "exclusive presale" behind the marina',
+  RUGS_PULLED: 47,
+  EPISODES: [
+    { n: '01', title: 'The Collection', sub: 'The crew pays him a visit.', clip: 'collection' },
+    { n: '02', title: 'Rugsy strikes back', sub: 'Unlocks at 100 crew PFPs made.', locked: true },
+    { n: '03', title: '???', sub: 'Decided by the weekly poll on Telegram.', locked: true }
+  ]
+};
 const CONTRACT = CONFIG.CONTRACT.trim();
 const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -1180,7 +1263,7 @@ const T = {
   'v.eyebrow':'Surveillance footage','v.title':'The videos','v.lede':'The trailer, the suspect files, the news flashes and the making of the heist. Turn the sound up.',
   'm1.c1':'The crew is assembled: three robbers and one enemy','m1.c2':'Logo, website and mini-game live','m1.c3':'11 videos shot: teaser, trailer, suspect files, Breaking News, The Collection…','m1.c4':'X and Telegram open','m1.c5':'Launch time announced: 00:00 CET',
   'g.share':'Share','g.shareTxt':"I just stole {s} as {c} in Memes Theft Auto {st}\nThink you can beat it? $MTA · 19.11 · Solana",
-  news:["Three suspects spotted planning a heist on the Bank of Solana","Launch set for 19.11 · fair launch · no team tokens · 0 tax","Witnesses report an orange penguin backpack \"full of liquidity\"","A black Kingsegg hypercar was seen leaving the marina","Rugsy Jack still barricaded behind his front door","Authorities advise: do not approach, they will shill you $MTA","Official contract address: only on this site and on our X","New record in the heist? Share your score on X"],
+  news:["Three suspects spotted planning a heist on the Bank of Solana","Launch set for 19.11 · fair launch · no presale · 0 tax","Witnesses report an orange penguin backpack \"full of liquidity\"","A black Kingsegg hypercar was seen leaving the marina","Rugsy Jack still barricaded behind his front door","Rugsy Jack spotted selling a \"presale\" near the marina. Do not engage","Authorities advise: do not approach, they will shill you $MTA","Official contract address: only on this site and on our X","New record in the heist? Share your score on X"],
   'nav.coup':'The job','nav.gang':'The crew','nav.buy':'Buy','nav.missions':'Missions','nav.game':'The heist',
   'cta.buy':'Buy $MTA','cta.how':'How to buy','cta.play':'Play the heist','chip.fair':'Fair launch',
   'hero.title':'The heist of the year starts <em>19.11</em>',
@@ -1211,7 +1294,7 @@ const T = {
   'm3.h':'On the run','m3.p':'A crew video every day, DexScreener update, raids on X and TikTok, high-score contests on the heist. The whole city is after us.',
   'm4.h':'Five stars','m4.p':'Maximum wanted level: new crew members, season 2 of the videos, merch and surprises for holders.',
   'st.live':'Ready · 5/5','st.locked':'Locked',
-  'g.eyebrow':'Bonus','g.title':'The heist','g.lede':'Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro.',
+  'g.eyebrow':'Bonus','g.title':'The heist','g.lede':'Pick your robber and run through the city: jump the cop cars, slide under the choppers, grab the loot and complete missions. Clear a car by a hair for a close-call bonus, catch the Kingsegg key to go full nitro, and when Rugsy Jack shows up with the bag: collect him.',
   'g.perk1':'Double jump','g.perk2':'Magnet bag','g.perk3':'Longer nitro','g.best':'Best',
   'g.help':'Space or ↑ to jump, ↓ to slide, Esc to pause. On mobile: tap to jump, swipe down to slide under the choppers.',
   'g.jump':'Jump','g.slide':'Slide','g.board':'Your best heists','g.empty':'No heist yet',
@@ -1514,7 +1597,7 @@ const Game = {};
 const stage = document.getElementById('stage'), cv = document.getElementById('game'), ctx = cv.getContext('2d');
 const IMG = {};
 const load = (k, src) => { const im = new Image(); im.src = src; im.onload = () => Game.draw && Game.draw(); IMG[k] = im; };
-[['pumpchi','sprite-pumpchi'],['pengie','sprite-pengie'],['talljr','sprite-talljr'],['sky','game-sky'],['cop','g-cop'],['car','g-hypercar'],['heli','g-heli'],['bag','g-bag'],['coin','g-coin'],['barrier','g-barrier'],['cone','g-cone']].forEach(([k, f]) => load(k, `assets/${f}.webp`));
+[['pumpchi','sprite-pumpchi'],['pengie','sprite-pengie'],['talljr','sprite-talljr'],['sky','game-sky'],['cop','g-cop'],['car','g-hypercar'],['heli','g-heli'],['bag','g-bag'],['coin','g-coin'],['barrier','g-barrier'],['cone','g-cone'],['rugsy','sprite-rugsy']].forEach(([k, f]) => load(k, `assets/${f}.webp`));
 const ok = k => IMG[k] && IMG[k].complete && IMG[k].naturalWidth > 0;
 const CHARS = {
   pumpchi:{h:1.0, jumps:2, magnet:0, nitro:5},
@@ -1586,7 +1669,8 @@ const MISSIONS = [
   {k:'close', n:3, txt:'Pull off 3 close calls'},
   {k:'smash', n:3, txt:'Smash 3 obstacles on nitro'},
   {k:'stars', n:3, txt:'Reach 3 wanted stars'},
-  {k:'dist', n:700, txt:'Run 700 m'}
+  {k:'dist', n:700, txt:'Run 700 m'},
+  {k:'rugsy', n:1, txt:'Collect Rugsy Jack'}
 ];
 
 /* ---- world ---- */
@@ -1602,7 +1686,7 @@ function reset(){
     nextObs:1.4, nextItem:.4, nextPower:rnd(12, 18), nextProp:0,
     combo:0, comboT:0, bestCombo:0, stars:1, shake:0, flash:0, flashCol:'255,207,58', banner:null, siren:0, dead:0, newBest:false,
     chasers:[],
-    g:H * 3.9, buf:0, cnt:{coins:0, bags:0, close:0, smash:0}, mis:null, misDone:0, misPool:[]
+    g:H * 3.9, buf:0, rug:null, nextRug:rnd(14, 20), cnt:{coins:0, bags:0, close:0, smash:0, rugsy:0}, mis:null, misDone:0, misPool:[]
   };
   G.py = G.ground;
   nextMission();
@@ -1752,6 +1836,7 @@ function update(dt){
   if (state === 'run' && G.nextObs <= 0){ const mul = spawnObstacle(); G.nextObs = (Math.max(.85, 1.9 - G.t * .018) + rnd(0, .8)) * mul; }
   if (state === 'run' && G.nextItem <= 0){ spawnItems(); G.nextItem = rnd(1.1, 2); }
   if (state === 'run' && G.nextPower <= 0){ spawnPower(); G.nextPower = rnd(16, 24); }
+
   // chasing cop cars at 3+ stars (pressure, purely visual)
   if (G.stars >= 3 && G.chasers.length < Math.min(2, G.stars - 2)) G.chasers.push({off:rnd(-.06, .02), ph:rnd(0, 6)});
   // roadside props
@@ -1763,6 +1848,22 @@ function update(dt){
   const px = W * .17, sliding = G.slide > 0 && G.py >= G.ground - 2;
   const ph = sliding ? G.ph * .45 : G.ph, pw = G.ph * .3;
   const hit = G.nitro > 0 ? {x:px - H * .3, y:G.ground - H * .16, w:H * .62, h:H * .16} : {x:px - pw * .5, y:G.py - ph * .94, w:pw, h:ph * .9};
+  // Rugsy Jack runs ahead with the bag: catch him for a big bonus
+  G.nextRug -= dt;
+  if (state === 'run' && !G.rug && G.nextRug <= 0){ G.rug = {x:W + 60, cyc:0, out:false}; G.nextRug = rnd(26, 38); G.banner = {txt:'RUGSY SPOTTED!', life:1.2}; SFX.close(); }
+  if (G.rug){
+    const r = G.rug; r.cyc += dt * 13;
+    if (r.out){ r.vy += H * 4 * dt; r.y += r.vy * dt; r.x += r.vx * dt; r.rot += r.vr * dt; if (r.y > H + 200) G.rug = null; }
+    else {
+      r.x -= G.speed * .42 * dt;   // he's slower than the crew
+      const rh = G.ph * 1.02, rw = rh * .2, rx = r.x - rw / 2, ry = G.ground - rh * .95;
+      if (state === 'run' && hit.x < rx + rw && hit.x + hit.w > rx && hit.y < ry + rh * .9 && hit.y + hit.h > ry){
+        r.out = true; r.y = G.ground - rh; r.vy = -H * 1.4; r.vx = H * .8; r.rot = 0; r.vr = 7; G.cnt.rugsy++;
+        addLoot(2500, r.x, G.ground - rh, '#24d4c4'); cash(r.x, G.ground - rh * .6, 22); G.banner = {txt:'RUGSY COLLECTED!', life:1.6}; G.flash = .45; G.flashCol = '36,212,196'; G.shake = .3; SFX.bag();
+        try { localStorage.setItem('mta-rugsy', String(+(localStorage.getItem('mta-rugsy') || 0) + 1)); } catch (e) {}
+      } else if (r.x < -80){ floater('HE GOT AWAY…', W * .17 + 20 * s, G.ground - G.ph * 1.2, '#ff3b4e'); G.rug = null; }
+    }
+  }
   // obstacles
   for (const o of G.obs){
     o.x -= dx + (o.vx || 0) * dt; if (o.warn) o.warn -= dt;
@@ -1952,6 +2053,23 @@ function drawItem(it){
   else if (it.k === 'x2'){ const r = it.r; glow(it.x, it.y + bob, r * 2.4, '255,207,58'); ctx.save(); ctx.translate(it.x, it.y + bob); ctx.fillStyle = '#ffcf3a'; ctx.strokeStyle = '#140a1f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#140a1f'; ctx.font = `${r * .95}px Bungee, Impact, sans-serif`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText('x2', 0, 2); ctx.restore(); }
 }
 function glow(x, y, r, rgb){ const g = ctx.createRadialGradient(x, y, 0, x, y, r); g.addColorStop(0, `rgba(${rgb},.55)`); g.addColorStop(1, `rgba(${rgb},0)`); ctx.fillStyle = g; ctx.fillRect(x - r, y - r, r * 2, r * 2); }
+function drawRugsy(){
+  const r = G.rug; if (!r || !ok('rugsy')) return;
+  const im = IMG.rugsy, rh = G.ph * 1.02, rw = rh * im.naturalWidth / im.naturalHeight;
+  ctx.save();
+  if (r.out){ ctx.translate(r.x, r.y + rh / 2); ctx.rotate(r.rot); ctx.drawImage(im, -rw / 2, -rh / 2, rw, rh); ctx.restore(); return; }
+  const bob = Math.abs(Math.sin(r.cyc)) * 6 * unit();
+  ctx.fillStyle = 'rgba(0,0,0,.4)'; ctx.beginPath(); ctx.ellipse(r.x, G.ground + 2, rw * .45, 5 * unit(), 0, 0, Math.PI * 2); ctx.fill();
+  ctx.translate(r.x, G.ground - bob); ctx.rotate(.08 + Math.sin(r.cyc) * .04);
+  ctx.drawImage(im, -rw / 2, -rh, rw, rh);
+  ctx.restore();
+  // target tag above his head
+  const blink = Math.floor(G.t * 6) % 2, fs = Math.max(10, 12 * unit());
+  ctx.font = `700 ${fs}px "Chakra Petch", monospace`; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+  const tw = ctx.measureText('RUGSY JACK').width + 14, ty = G.ground - rh - 18 * unit() - bob;
+  ctx.fillStyle = blink ? '#ff3b4e' : '#c0201f'; ctx.fillRect(r.x - tw / 2, ty - fs * .8, tw, fs * 1.6);
+  ctx.fillStyle = '#fff3e2'; ctx.fillText('RUGSY JACK', r.x, ty + 1);
+}
 function drawPlayer(){
   const px = W * .17;
   if (G.nitro > 0 && ok('car')){
@@ -2036,6 +2154,7 @@ function draw(){
   for (const it of G.items) drawItem(it);
   drawChasers();
   for (const o of G.obs) drawObstacle(o);
+  drawRugsy();
   if (state !== 'over') drawPlayer();
   drawParticles();
   ctx.restore();
@@ -2302,6 +2421,37 @@ tickCountdown(true);
     drawPoster(); const slug = (idName.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'crew').toLowerCase();
     saveCanvas(kc, `mta-crew-id-${slug}.png`);
   });
+  /* ---- Rugsy Jack: tracker, presale bait, peek ---- */
+  (() => {
+    const $ = id => document.getElementById(id);
+    $('trk-status').textContent = RUGSY.STATUS; $('trk-seen').textContent = RUGSY.LAST_SEEN; $('trk-rugs').textContent = RUGSY.RUGS_PULLED;
+    const you = () => { let n = 0; try { n = +(localStorage.getItem('mta-rugsy') || 0); } catch (e) {} $('trk-you').textContent = n; };
+    you(); window.addEventListener('focus', you); setInterval(you, 4000);
+    $('trk-eps').innerHTML = RUGSY.EPISODES.map(e => `<li class="${e.locked ? 'locked' : ''}"><span class="ep">EP ${e.n}</span><span><b>${e.title}</b><small>${e.sub}</small></span>${e.locked ? '<span class="hud" style="font-size:.7rem;color:var(--muted)">🔒 Locked</span>' : `<a class="btn btn-ghost btn-sm" href="#videos" data-ep-clip="${e.clip}">Watch ▶</a>`}</li>`).join('');
+    document.querySelectorAll('[data-ep-clip]').forEach(a => a.addEventListener('click', ev => { const twin = document.querySelector(`[data-clip="${a.dataset.epClip}"]`); if (twin){ ev.preventDefault(); twin.click(); } }));
+    // fake presale bait: once per visit, after a while on the page
+    const bait = $('bait'), busted = $('busted');
+    let seen = false; try { seen = !!sessionStorage.getItem('mta-bait'); } catch (e) {}
+    const show = () => { if (seen) return; seen = true; try { sessionStorage.setItem('mta-bait', '1'); } catch (e) {} bait.hidden = false; requestAnimationFrame(() => requestAnimationFrame(() => bait.classList.add('on')));
+      let left = 299; const tm = setInterval(() => { left = Math.max(0, left - 1); $('bait-time').textContent = `0${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`; if (!bait.isConnected || bait.hidden) clearInterval(tm); }, 1000); };
+    const hide = () => { bait.classList.remove('on'); setTimeout(() => { bait.hidden = true; }, 500); };
+    setTimeout(show, 40000);
+    $('bait-x').addEventListener('click', () => { hide(); toast('Good instincts. Respect +'); });
+    $('bait-go').addEventListener('click', () => { hide(); busted.hidden = false; $('busted-ok').focus(); });
+    $('busted-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(`I just got Rugsy'd on the $MTA site 😭 There is no presale.\n${SITE}`);
+    const closeB = () => { busted.hidden = true; };
+    $('busted-ok').addEventListener('click', closeB); busted.addEventListener('click', e => { if (e.target === busted) closeB(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && !busted.hidden) closeB(); });
+    // Rugsy peeks from the edge once, when you reach the bottom half of the page
+    const peek = $('rugsy-peek'); let peeked = false;
+    const onScroll = () => { if (peeked || scrollY < document.body.scrollHeight * .55) return; peeked = true; peek.hidden = false;
+      requestAnimationFrame(() => requestAnimationFrame(() => peek.classList.add('on'))); setTimeout(() => { peek.classList.remove('on'); setTimeout(() => peek.hidden = true, 600); }, 3500); };
+    addEventListener('scroll', onScroll, { passive: true });
+    peek.addEventListener('click', () => { peek.classList.remove('on'); toast('You spotted Rugsy! He ran.'); });
+    function toast(msg){ let t = document.getElementById('mta-toast'); if (!t){ t = document.createElement('div'); t.id = 'mta-toast'; t.setAttribute('role', 'status');
+      t.style.cssText = 'position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:95;background:var(--gold);color:var(--ink);font:700 .85rem var(--f-hud);letter-spacing:.06em;padding:10px 16px;border-radius:999px;box-shadow:0 10px 30px rgba(0,0,0,.4);transition:opacity .3s'; document.body.appendChild(t); }
+      t.textContent = msg; t.style.opacity = '1'; clearTimeout(t._h); t._h = setTimeout(() => { t.style.opacity = '0'; }, 2200); }
+  })();
   /* ---- Telegram links: on phones, open the Telegram app directly (t.me pages often stall inside the X / Telegram in-app browsers) ---- */
   const toTg = u => { const m = u.match(/^https:\/\/t\.me\/(addstickers\/)?([A-Za-z0-9_]+)\/?$/); return m ? (m[1] ? 'tg://addstickers?set=' + m[2] : 'tg://resolve?domain=' + m[2]) : null; };
   document.addEventListener('click', e => {
