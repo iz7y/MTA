@@ -104,7 +104,7 @@ p{margin:0}
 .lvl button{background:none;border:0;padding:2px;font-size:1.9rem;line-height:1;color:var(--dusk-2);cursor:pointer;transition:transform .15s,color .15s}
 .lvl button.on{color:var(--gold);text-shadow:0 2px 0 var(--ink)}
 .lvl button:hover{transform:scale(1.15)}
-.stickers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,1.2vw,14px);list-style:none;margin:0;padding:0}
+.stickers{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:clamp(6px,1.2vw,14px);list-style:none;margin:0;padding:0}
 .stickers li{aspect-ratio:1;display:grid;place-items:center;border-radius:12px;background:rgba(20,10,31,.45);transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s}
 .stickers li:hover{transform:rotate(-4deg) scale(1.06);background:rgba(58,26,85,.7)}
 .stickers img{width:92%;height:auto;display:block}
@@ -2060,7 +2060,7 @@ tickCountdown(true);
 
 /* ---------------- Join the crew: wanted PFP studio + sticker pack ---------------- */
 (() => {
-  const STICKERS = ['01_logo', '02_pumpchi_in_early', '03_pengie_bag_secured', '04_talljr_im_outside', '05_rugsy_trust_me_bro', '06_wasted', '07_mission_passed', '08_busted', '09_five_stars', '10_rugs_not_accepted', '11_heist_is_on', '12_not_selling', '13_send_it', '14_gm_crew', '15_bag_mta'];
+  const STICKERS = ['01_logo', '02_pumpchi_in_early', '03_pengie_bag_secured', '04_talljr_im_outside', '05_rugsy_trust_me_bro', '06_wasted', '07_mission_passed', '08_busted', '09_five_stars', '10_rugs_not_accepted', '11_heist_is_on', '12_not_selling', '13_send_it', '14_gm_crew', '15_bag_mta', '16_pumpchi_sniped', '17_pengie_liquidity_plz', '18_talljr_prepare_the_jet', '19_rugsy_collected', '20_lfg', '21_buy_the_dip', '22_on_the_run', '23_sirens_on', '24_respect', '25_wanted', '26_chart_go_up'];
   const grid = document.getElementById('sticker-grid');
   grid.innerHTML = STICKERS.map(n => `<li><img src="assets/stickers/${n}.webp" alt="${n.slice(3).replace(/_/g, ' ')}" width="512" height="512" loading="lazy" decoding="async"></li>`).join('');
   const tg = document.getElementById('stk-tg');
