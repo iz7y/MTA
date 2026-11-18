@@ -1014,8 +1014,8 @@ document.documentElement.classList.add('js');
    ===================================================================== */
 const CONFIG = {
   CONTRACT: '',                               // token mint address
-  X_URL: '',                                  // e.g. https://x.com/memestheftauto
-  TG_URL: '',                                 // e.g. https://t.me/memestheftauto
+  X_URL: 'https://x.com/SolanaMta',                                  // e.g. https://x.com/memestheftauto
+  TG_URL: 'https://t.me/mtagta6',                                 // e.g. https://t.me/memestheftauto
   SITE_URL: 'https://iz7y.github.io/MTA/',                               // public address of the site once hosted
   LAUNCH_AT: '2026-11-19T00:00:00+01:00',     // exact launch time (Paris) once announced
   DEV_BUY_PCT: '',                            // total % of supply bought by the team at launch, e.g. '3.5'
@@ -2114,6 +2114,18 @@ tickCountdown(true);
   document.getElementById('wp-save').addEventListener('click', () => {
     drawPoster(); const slug = (nameEl.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'crew').toLowerCase();
     saveCanvas(pc, `mta-wanted-${slug}.png`);
+  });
+  /* ---- Telegram links: on phones, open the Telegram app directly (t.me pages often stall inside the X / Telegram in-app browsers) ---- */
+  const toTg = u => { const m = u.match(/^https:\/\/t\.me\/(addstickers\/)?([A-Za-z0-9_]+)\/?$/); return m ? (m[1] ? 'tg://addstickers?set=' + m[2] : 'tg://resolve?domain=' + m[2]) : null; };
+  document.addEventListener('click', e => {
+    const a = e.target.closest && e.target.closest('a[href^="https://t.me/"]');
+    if (!a || !matchMedia('(pointer:coarse)').matches) return;
+    const app = toTg(a.href); if (!app) return;
+    e.preventDefault();
+    const web = a.href; let left = false; const hide = () => { left = true; };
+    document.addEventListener('visibilitychange', hide, { once: true });
+    location.href = app;
+    setTimeout(() => { document.removeEventListener('visibilitychange', hide); if (!left && document.visibilityState === 'visible') location.href = web; }, 1600);
   });
 })();
 })();
