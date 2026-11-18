@@ -89,6 +89,21 @@ p{margin:0}
 .studio-actions{display:flex;flex-wrap:wrap;gap:10px}
 .fine{font:500 .82rem var(--f-hud);color:var(--muted);letter-spacing:.03em}
 .pfp-err{color:var(--sunset);font:600 .88rem var(--f-hud)}
+.poster-wrap{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:center}
+@media (max-width:760px){.poster-wrap{grid-template-columns:1fr}}
+.poster-stage{width:100%;max-width:380px;margin-inline:auto;aspect-ratio:4/5;transform:rotate(-1.5deg);box-shadow:0 22px 50px rgba(0,0,0,.6);border-radius:3px;overflow:hidden;background:#efe2c8}
+.poster-stage canvas{width:100%;height:100%;display:block}
+.field{display:flex;flex-direction:column;gap:8px;min-width:0}
+.field input[type=text],.field select{width:100%;min-width:0;font:600 1rem var(--f-hud);letter-spacing:.04em;color:var(--paper);background:rgba(20,10,31,.7);border:1px solid var(--dusk-2);border-radius:var(--radius);padding:12px 14px}
+.field input[type=text]:focus,.field select:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(255,207,58,.25)}
+.field-row{display:flex;gap:10px;min-width:0}
+.field-row select{flex:1}
+.icon-sq{flex:none;width:48px;border-radius:var(--radius);border:1px solid var(--dusk-2);background:rgba(20,10,31,.7);color:var(--gold);font-size:1.3rem;cursor:pointer}
+.icon-sq:hover{border-color:var(--gold)}
+.lvl{display:flex;gap:4px}
+.lvl button{background:none;border:0;padding:2px;font-size:1.9rem;line-height:1;color:var(--dusk-2);cursor:pointer;transition:transform .15s,color .15s}
+.lvl button.on{color:var(--gold);text-shadow:0 2px 0 var(--ink)}
+.lvl button:hover{transform:scale(1.15)}
 .stickers{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:clamp(6px,1.2vw,14px);list-style:none;margin:0;padding:0}
 .stickers li{aspect-ratio:1;display:grid;place-items:center;border-radius:12px;background:rgba(20,10,31,.45);transition:transform .2s cubic-bezier(.2,.8,.2,1),background .2s}
 .stickers li:hover{transform:rotate(-4deg) scale(1.06);background:rgba(58,26,85,.7)}
@@ -825,7 +840,7 @@ footer .wrap{display:grid;gap:22px}
       <div class="sec-head rv">
         <span class="hud">Join the crew</span>
         <h2>Wear the mask</h2>
-        <p>Every holder is part of the crew. Put the $MTA wanted frame on your profile picture, grab the sticker pack and learn how the crew talks.</p>
+        <p>Every holder is part of the crew. Put the $MTA wanted frame on your profile picture, print your own wanted poster, grab the sticker pack and learn how the crew talks.</p>
       </div>
       <div class="crew-stack">
         <div class="panel rv" id="studio">
@@ -862,6 +877,40 @@ footer .wrap{display:grid;gap:22px}
               </div>
               <p class="pfp-err" id="pfp-err" role="status" hidden></p>
               <p class="fine">Your photo stays on your device: nothing is uploaded anywhere.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel rv" id="wanted">
+          <div class="poster-wrap">
+            <div class="poster-stage"><canvas id="poster-canvas" width="1080" height="1350" role="img" aria-label="Your $MTA wanted poster"></canvas></div>
+            <div class="studio-ctrl">
+              <div>
+                <h3 style="font-size:var(--step-2)">Make your wanted poster</h3>
+                <p style="color:var(--muted);margin-top:6px">Your name, your crime, your bounty. Uses the photo from your PFP above, or add another one.</p>
+              </div>
+              <div class="field">
+                <label class="ctrl-label" for="wp-name" style="margin:0">Name or @handle</label>
+                <input type="text" id="wp-name" maxlength="22" placeholder="@yourname" autocomplete="off" spellcheck="false">
+              </div>
+              <div class="field">
+                <label class="ctrl-label" for="wp-crime" style="margin:0">Wanted for</label>
+                <div class="field-row">
+                  <select id="wp-crime"></select>
+                  <button type="button" class="icon-sq" id="wp-roll" aria-label="New bounty and crime" title="Reroll">🎲</button>
+                </div>
+              </div>
+              <div class="field">
+                <span class="ctrl-label" id="wp-lvl-lbl" style="margin:0">Wanted level</span>
+                <div class="lvl" role="group" aria-labelledby="wp-lvl-lbl" id="wp-lvl"></div>
+              </div>
+              <div class="studio-actions">
+                <span class="upload"><span class="btn btn-ghost">Use another photo</span><input type="file" id="wp-file" accept="image/*" aria-label="Photo for the poster"></span>
+              </div>
+              <div class="studio-actions">
+                <button type="button" class="btn btn-gold" id="wp-save">Download poster</button>
+                <a class="btn btn-ghost" id="wp-share" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Post on X</a>
+              </div>
             </div>
           </div>
         </div>
@@ -1875,6 +1924,7 @@ tickCountdown(true);
   const stage = document.getElementById('pfp-stage'), zoomEl = document.getElementById('pfp-zoom');
   const err = document.getElementById('pfp-err'), example = document.getElementById('pfp-example');
   let img = new Image(), style = 'gold', zoom = 1, ox = 0, oy = 0, ready = false;
+  let userImg = null, drawPoster = () => {};
 
   const base = () => Math.max(W / img.naturalWidth, W / img.naturalHeight);
   function clampPan(){
@@ -1920,7 +1970,7 @@ tickCountdown(true);
   }
   function load(src, sample){
     const im = new Image();
-    im.onload = () => { img = im; ready = true; zoom = 1; ox = 0; oy = Math.max(0, (im.naturalHeight * Math.max(W / im.naturalWidth, W / im.naturalHeight) - W) / 2) * .6; zoomEl.value = 100; example.hidden = !sample; err.hidden = true; draw(); };
+    im.onload = () => { img = im; ready = true; zoom = 1; ox = 0; oy = Math.max(0, (im.naturalHeight * Math.max(W / im.naturalWidth, W / im.naturalHeight) - W) / 2) * .6; zoomEl.value = 100; example.hidden = !sample; err.hidden = true; draw(); if (!sample){ userImg = im; drawPoster(); } };
     im.onerror = () => { if (!sample){ err.textContent = "That file couldn't be opened. Try a JPG or PNG photo."; err.hidden = false; } };
     im.src = src;
   }
@@ -1968,6 +2018,102 @@ tickCountdown(true);
       const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     }, 'image/png');
+  });
+  /* ---- Wanted poster ---- */
+  const pc = document.getElementById('poster-canvas'), px = pc.getContext('2d'), PW = 1080, PH = 1350;
+  const CRIMES = ['Buying the bottom', 'Holding through three dips', "Aping in at launch", 'Refusing to sell', 'Raiding 100 posts in a day', 'Exposing Rugsy Jack', 'Diamond hands in the first degree', 'Spreading the word at 3 AM', 'Stealing the show'];
+  const nameEl = document.getElementById('wp-name'), crimeEl = document.getElementById('wp-crime'), lvlEl = document.getElementById('wp-lvl');
+  crimeEl.innerHTML = CRIMES.map((c, i) => `<option value="${i}">${c}</option>`).join('');
+  let level = 5, posterImg = null, bounty = 0;
+  lvlEl.innerHTML = [1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('');
+  const rollBounty = () => { const steps = [250, 500, 750, 1000, 1500, 2500, 5000, 7500, 10000]; bounty = steps[Math.floor(Math.random() * steps.length)] * 1000; };
+  rollBounty(); crimeEl.value = String(Math.floor(Math.random() * CRIMES.length));
+  // paper grain, generated once
+  const grain = document.createElement('canvas'); grain.width = PW; grain.height = PH;
+  (() => { const g = grain.getContext('2d'); let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+    for (let i = 0; i < 9000; i++){ g.fillStyle = `rgba(90,60,30,${.04 + rnd() * .08})`; g.fillRect(rnd() * PW, rnd() * PH, 1 + rnd() * 3, 1 + rnd() * 3); }
+    for (let i = 0; i < 26; i++){ g.fillStyle = `rgba(120,80,40,${.03 + rnd() * .05})`; g.beginPath(); g.arc(rnd() * PW, rnd() * PH, 20 + rnd() * 90, 0, Math.PI * 2); g.fill(); } })();
+  const fit = (txt, font, maxW, size) => { do { px.font = font.replace('{s}', size); size -= 2; } while (px.measureText(txt).width > maxW && size > 20); };
+  const pStar = (cx, cy, r, on) => { px.beginPath(); for (let i = 0; i < 10; i++){ const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / 5; px[i ? 'lineTo' : 'moveTo'](cx + rr * Math.cos(a), cy + rr * Math.sin(a)); } px.closePath();
+    px.fillStyle = on ? '#c0201f' : 'rgba(42,26,16,.12)'; px.fill(); px.lineWidth = 5; px.lineJoin = 'round'; px.strokeStyle = '#2a1a10'; px.stroke(); };
+  drawPoster = function(){
+    const ink = '#2a1a10', red = '#c0201f';
+    // paper
+    const bg = px.createRadialGradient(PW / 2, PH * .45, PW * .2, PW / 2, PH / 2, PW * .85);
+    bg.addColorStop(0, '#f3e7cf'); bg.addColorStop(1, '#cdb48a'); px.fillStyle = bg; px.fillRect(0, 0, PW, PH);
+    px.drawImage(grain, 0, 0);
+    px.lineWidth = 10; px.strokeStyle = ink; px.strokeRect(34, 34, PW - 68, PH - 68);
+    px.lineWidth = 3; px.strokeRect(52, 52, PW - 104, PH - 104);
+    px.textAlign = 'center'; px.textBaseline = 'alphabetic';
+    // header
+    fit('WANTED', '400 {s}px Bungee, Impact, "Arial Black", sans-serif', PW - 160, 210); px.fillStyle = ink; px.fillText('WANTED', PW / 2, 250);
+    px.font = '700 34px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = red;
+    px.fillText('B Y   T H E   $ M T A   C R E W', PW / 2, 306);
+    // photo
+    const bx = 200, by = 340, bw = 680, bh = 560;
+    px.fillStyle = '#3a2a1e'; px.fillRect(bx, by, bw, bh);
+    const src = posterImg || userImg;
+    if (src){
+      const sc = Math.max(bw / src.naturalWidth, bh / src.naturalHeight), iw = src.naturalWidth * sc, ih = src.naturalHeight * sc;
+      const dy = Math.max(0, (ih - bh) / 2) * .6;
+      px.save(); px.beginPath(); px.rect(bx, by, bw, bh); px.clip();
+      px.drawImage(src, bx + (bw - iw) / 2, by + (bh - ih) / 2 + dy, iw, ih);
+      px.globalCompositeOperation = 'multiply'; px.fillStyle = 'rgba(232,205,160,.55)'; px.fillRect(bx, by, bw, bh);
+      px.restore();
+    } else {
+      // anonymous silhouette
+      px.fillStyle = '#5a4432';
+      px.beginPath(); px.arc(PW / 2, by + 220, 105, 0, Math.PI * 2); px.fill();
+      px.beginPath(); px.ellipse(PW / 2, by + bh + 40, 250, 230, 0, Math.PI, 0); px.fill();
+      px.font = '400 150px Bungee, Impact, sans-serif'; px.fillStyle = '#efe2c8'; px.fillText('?', PW / 2, by + 275);
+    }
+    px.lineWidth = 8; px.strokeStyle = ink; px.strokeRect(bx, by, bw, bh);
+    // stamp
+    px.save(); px.translate(bx + bw - 120, by + bh - 70); px.rotate(-.2); px.globalAlpha = .88;
+    px.font = '400 44px Bungee, Impact, sans-serif'; const sw = px.measureText('CREW MEMBER').width + 50;
+    px.lineWidth = 7; px.strokeStyle = red; px.strokeRect(-sw / 2, -42, sw, 84); px.lineWidth = 2; px.strokeRect(-sw / 2 + 8, -34, sw - 16, 68);
+    px.fillStyle = red; px.textBaseline = 'middle'; px.fillText('CREW MEMBER', 0, 3); px.restore();
+    px.textBaseline = 'alphabetic';
+    // wanted level
+    for (let i = 0; i < 5; i++) pStar(PW / 2 + (i - 2) * 78, 952, 30, i < level);
+    // name
+    const nm = (nameEl.value.trim() || '@YOURNAME').toUpperCase();
+    fit(nm, '400 {s}px Bungee, Impact, "Arial Black", sans-serif', PW - 180, 112); px.fillStyle = ink; px.fillText(nm, PW / 2, 1072);
+    // charge
+    const crime = CRIMES[+crimeEl.value] || CRIMES[0];
+    px.font = '700 30px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = red; px.fillText('WANTED FOR', PW / 2, 1122);
+    fit(crime.toUpperCase(), '700 {s}px "Chakra Petch", ui-monospace, monospace', PW - 180, 44); px.fillStyle = ink; px.fillText(crime.toUpperCase(), PW / 2, 1170);
+    // bounty
+    px.font = '400 58px Bungee, Impact, sans-serif'; px.fillStyle = red;
+    fit('BOUNTY ' + bounty.toLocaleString('en-US') + ' $MTA', '400 {s}px Bungee, Impact, sans-serif', PW - 180, 60);
+    px.fillText('BOUNTY ' + bounty.toLocaleString('en-US') + ' $MTA', PW / 2, 1238);
+    px.font = '600 22px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = 'rgba(42,26,16,.7)';
+    px.fillText('MEMES THEFT AUTO  ·  SOLANA  ·  ' + SITE.replace(/^https?:\/\//, '').replace(/\/$/, ''), PW / 2, 1280);
+    lvlEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.n <= level));
+    lvlEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === level)));
+    const share = `I'm WANTED by the $MTA crew ${'★'.repeat(level)}\nWanted for: ${crime}\nBounty: ${bounty.toLocaleString('en-US')} $MTA\n\nMake yours: ${SITE}#wanted`;
+    document.getElementById('wp-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(share);
+  };
+  nameEl.addEventListener('input', drawPoster);
+  crimeEl.addEventListener('change', drawPoster);
+  document.getElementById('wp-roll').addEventListener('click', () => { rollBounty(); let c; do { c = Math.floor(Math.random() * CRIMES.length); } while (String(c) === crimeEl.value); crimeEl.value = String(c); drawPoster(); });
+  lvlEl.addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (b){ level = +b.dataset.n; drawPoster(); } });
+  document.getElementById('wp-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    const im = new Image(); im.onload = () => { posterImg = im; drawPoster(); }; im.src = URL.createObjectURL(f); });
+  (document.fonts && document.fonts.load ? Promise.all([document.fonts.load('60px Bungee'), document.fonts.load('700 30px "Chakra Petch"')]) : Promise.resolve()).then(drawPoster, drawPoster);
+  drawPoster();
+  async function saveCanvas(canvas, name){
+    const blob = await new Promise(r => canvas.toBlob(r, 'image/png')); if (!blob) return;
+    try {
+      const file = new File([blob], name, { type: 'image/png' });
+      if (matchMedia('(pointer:coarse)').matches && navigator.canShare && navigator.canShare({ files: [file] })){ await navigator.share({ files: [file], title: '$MTA' }); return; }
+    } catch (e) { if (e && e.name === 'AbortError') return; }
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+  document.getElementById('wp-save').addEventListener('click', () => {
+    drawPoster(); const slug = (nameEl.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'crew').toLowerCase();
+    saveCanvas(pc, `mta-wanted-${slug}.png`);
   });
 })();
 })();
