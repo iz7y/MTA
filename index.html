@@ -89,10 +89,15 @@ p{margin:0}
 .studio-actions{display:flex;flex-wrap:wrap;gap:10px}
 .fine{font:500 .82rem var(--f-hud);color:var(--muted);letter-spacing:.03em}
 .pfp-err{color:var(--sunset);font:600 .88rem var(--f-hud)}
-.poster-wrap{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:center}
-@media (max-width:760px){.poster-wrap{grid-template-columns:1fr}}
-.poster-stage{width:100%;max-width:380px;margin-inline:auto;aspect-ratio:4/5;transform:rotate(-1.5deg);box-shadow:0 22px 50px rgba(0,0,0,.6);border-radius:3px;overflow:hidden;background:#efe2c8}
-.poster-stage canvas{width:100%;height:100%;display:block}
+.card-wrap{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:clamp(18px,3vw,36px);align-items:center}
+@media (max-width:860px){.card-wrap{grid-template-columns:1fr}}
+.card-stage{width:100%;aspect-ratio:1200/760;border-radius:clamp(10px,1.6vw,18px);overflow:hidden;box-shadow:0 24px 60px rgba(0,0,0,.6),0 0 0 1px rgba(255,207,58,.25);transform:perspective(1200px) rotateY(-4deg) rotateX(2deg);transition:transform .4s cubic-bezier(.2,.8,.2,1);background:#1b0b2e}
+.card-stage:hover{transform:none}
+.card-stage canvas{width:100%;height:100%;display:block}
+.crew-pick{display:flex;flex-wrap:wrap;gap:8px}
+.crew-pick button{display:flex;align-items:center;gap:8px;padding:4px 12px 4px 4px;border-radius:999px;border:1px solid var(--dusk-2);background:rgba(20,10,31,.7);color:var(--paper);font:600 .85rem var(--f-hud);cursor:pointer}
+.crew-pick img{width:34px;height:34px;object-fit:cover;object-position:top;border-radius:50%;background:var(--dusk)}
+.crew-pick button[aria-pressed="true"]{border-color:var(--gold);box-shadow:0 0 0 2px rgba(255,207,58,.35)}
 .field{display:flex;flex-direction:column;gap:8px;min-width:0}
 .field input[type=text],.field select{width:100%;min-width:0;font:600 1rem var(--f-hud);letter-spacing:.04em;color:var(--paper);background:rgba(20,10,31,.7);border:1px solid var(--dusk-2);border-radius:var(--radius);padding:12px 14px}
 .field input[type=text]:focus,.field select:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(255,207,58,.25)}
@@ -893,7 +898,7 @@ footer .wrap{display:grid;gap:22px}
       <div class="sec-head rv">
         <span class="hud">Join the crew</span>
         <h2>Wear the mask</h2>
-        <p>Every holder is part of the crew. Put the $MTA wanted frame on your profile picture, print your own wanted poster, grab the sticker pack and learn how the crew talks.</p>
+        <p>Every holder is part of the crew. Put the $MTA wanted frame on your profile picture, get your crew ID card, grab the sticker pack and learn how the crew talks.</p>
       </div>
       <div class="crew-stack">
         <div class="panel rv" id="studio">
@@ -934,35 +939,42 @@ footer .wrap{display:grid;gap:22px}
           </div>
         </div>
 
-        <div class="panel rv" id="wanted">
-          <div class="poster-wrap">
-            <div class="poster-stage"><canvas id="poster-canvas" width="1080" height="1350" role="img" aria-label="Your $MTA wanted poster"></canvas></div>
+        <div class="panel rv" id="crew-id">
+          <div class="card-wrap">
+            <div class="card-stage"><canvas id="card-canvas" width="1200" height="760" role="img" aria-label="Your $MTA crew ID card"></canvas></div>
             <div class="studio-ctrl">
               <div>
-                <h3 style="font-size:var(--step-2)">Make your wanted poster</h3>
-                <p style="color:var(--muted);margin-top:6px">Your name, your crime, your bounty. Uses the photo from your PFP above, or add another one.</p>
+                <h3 style="font-size:var(--step-2)">Get your crew ID</h3>
+                <p style="color:var(--muted);margin-top:6px">Your official member card. Uses the photo from your PFP above, or add another one.</p>
               </div>
               <div class="field">
-                <label class="ctrl-label" for="wp-name" style="margin:0">Name or @handle</label>
-                <input type="text" id="wp-name" maxlength="22" placeholder="@yourname" autocomplete="off" spellcheck="false">
+                <label class="ctrl-label" for="id-name" style="margin:0">Name or @handle</label>
+                <input type="text" id="id-name" maxlength="20" placeholder="@yourname" autocomplete="off" spellcheck="false">
               </div>
               <div class="field">
-                <label class="ctrl-label" for="wp-crime" style="margin:0">Wanted for</label>
-                <div class="field-row">
-                  <select id="wp-crime"></select>
-                  <button type="button" class="icon-sq" id="wp-roll" aria-label="New bounty and crime" title="Reroll">🎲</button>
+                <label class="ctrl-label" for="id-role" style="margin:0">Position</label>
+                <select id="id-role">
+                  <option>The Brains</option><option>The Bagman</option><option>The Wheelman</option><option>The Lookout</option><option>The Hacker</option><option>The Muscle</option>
+                </select>
+              </div>
+              <div class="field">
+                <span class="ctrl-label" id="id-crew-lbl" style="margin:0">Your crew</span>
+                <div class="crew-pick" role="group" aria-labelledby="id-crew-lbl" id="id-crew">
+                  <button type="button" data-k="pumpchi" aria-pressed="true"><img src="assets/sprite-pumpchi.webp" alt="">Pumpchi</button>
+                  <button type="button" data-k="pengie" aria-pressed="false"><img src="assets/sprite-pengie.webp" alt="">Pengie</button>
+                  <button type="button" data-k="talljr" aria-pressed="false"><img src="assets/sprite-talljr.webp" alt="">Tall-JR</button>
                 </div>
               </div>
               <div class="field">
-                <span class="ctrl-label" id="wp-lvl-lbl" style="margin:0">Wanted level</span>
-                <div class="lvl" role="group" aria-labelledby="wp-lvl-lbl" id="wp-lvl"></div>
+                <span class="ctrl-label" id="id-lvl-lbl" style="margin:0">Wanted level</span>
+                <div class="lvl" role="group" aria-labelledby="id-lvl-lbl" id="id-lvl"></div>
               </div>
               <div class="studio-actions">
-                <span class="upload"><span class="btn btn-ghost">Use another photo</span><input type="file" id="wp-file" accept="image/*" aria-label="Photo for the poster"></span>
+                <span class="upload"><span class="btn btn-ghost">Use another photo</span><input type="file" id="id-file" accept="image/*" aria-label="Photo for the card"></span>
               </div>
               <div class="studio-actions">
-                <button type="button" class="btn btn-gold" id="wp-save">Download poster</button>
-                <a class="btn btn-ghost" id="wp-share" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Post on X</a>
+                <button type="button" class="btn btn-gold" id="id-save">Download card</button>
+                <a class="btn btn-ghost" id="id-share" href="https://x.com/intent/tweet" target="_blank" rel="noopener">Post on X</a>
               </div>
             </div>
           </div>
@@ -1115,7 +1127,7 @@ const MOST_WANTED = {
     starts: '2026-11-19T00:00:00+01:00',
     ends: '2026-11-25T21:00:00+01:00'
   },
-  ROTATION: ['Heist of the week', 'Most Wanted poster', 'Meme & edit contest', 'Raid master'],
+  ROTATION: ['Heist of the week', 'Meme & edit contest', 'Raid master', 'Fan art contest'],
   BOARD: [
     // Top 10 of the week, best first. Example: { name: '@handle', score: '$48,250', note: 'Pengie · 7 missions' },
   ],
@@ -2175,87 +2187,82 @@ tickCountdown(true);
       setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     }, 'image/png');
   });
-  /* ---- Wanted poster ---- */
-  const pc = document.getElementById('poster-canvas'), px = pc.getContext('2d'), PW = 1080, PH = 1350;
-  const CRIMES = ['Buying the bottom', 'Holding through three dips', "Aping in at launch", 'Refusing to sell', 'Raiding 100 posts in a day', 'Exposing Rugsy Jack', 'Diamond hands in the first degree', 'Spreading the word at 3 AM', 'Stealing the show'];
-  const nameEl = document.getElementById('wp-name'), crimeEl = document.getElementById('wp-crime'), lvlEl = document.getElementById('wp-lvl');
-  crimeEl.innerHTML = CRIMES.map((c, i) => `<option value="${i}">${c}</option>`).join('');
-  let level = 5, posterImg = null, bounty = 0;
-  lvlEl.innerHTML = [1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('');
-  const rollBounty = () => { const steps = [250, 500, 750, 1000, 1500, 2500, 5000, 7500, 10000]; bounty = steps[Math.floor(Math.random() * steps.length)] * 1000; };
-  rollBounty(); crimeEl.value = String(Math.floor(Math.random() * CRIMES.length));
-  // paper grain, generated once
-  const grain = document.createElement('canvas'); grain.width = PW; grain.height = PH;
-  (() => { const g = grain.getContext('2d'); let seed = 7; const rnd = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
-    for (let i = 0; i < 9000; i++){ g.fillStyle = `rgba(90,60,30,${.04 + rnd() * .08})`; g.fillRect(rnd() * PW, rnd() * PH, 1 + rnd() * 3, 1 + rnd() * 3); }
-    for (let i = 0; i < 26; i++){ g.fillStyle = `rgba(120,80,40,${.03 + rnd() * .05})`; g.beginPath(); g.arc(rnd() * PW, rnd() * PH, 20 + rnd() * 90, 0, Math.PI * 2); g.fill(); } })();
-  const fit = (txt, font, maxW, size) => { do { px.font = font.replace('{s}', size); size -= 2; } while (px.measureText(txt).width > maxW && size > 20); };
-  const pStar = (cx, cy, r, on) => { px.beginPath(); for (let i = 0; i < 10; i++){ const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / 5; px[i ? 'lineTo' : 'moveTo'](cx + rr * Math.cos(a), cy + rr * Math.sin(a)); } px.closePath();
-    px.fillStyle = on ? '#c0201f' : 'rgba(42,26,16,.12)'; px.fill(); px.lineWidth = 5; px.lineJoin = 'round'; px.strokeStyle = '#2a1a10'; px.stroke(); };
+  /* ---- Crew ID card ---- */
+  const kc = document.getElementById('card-canvas'), kx = kc.getContext('2d'), KW = 1200, KH = 760;
+  const CREWS = { pumpchi: { name: 'Pumpchi', col: '#78e696' }, pengie: { name: 'Pengie', col: '#ff963c' }, talljr: { name: 'Tall-JR', col: '#ffcf3a' } };
+  const idName = document.getElementById('id-name'), idRole = document.getElementById('id-role'), idLvl = document.getElementById('id-lvl');
+  let crewK = 'pumpchi', idLevel = 5, idImg = null;
+  idLvl.innerHTML = [1, 2, 3, 4, 5].map(n => `<button type="button" data-n="${n}" aria-label="${n} star${n > 1 ? 's' : ''}">★</button>`).join('');
+  const joined = (() => { const d = new Date(); return [d.getDate(), d.getMonth() + 1].map(v => String(v).padStart(2, '0')).join('.') + '.' + d.getFullYear(); })();
+  const crewNo = n => { if (!n) return '#----'; let h = 2166136261; for (const c of n.toLowerCase()) { h ^= c.charCodeAt(0); h = Math.imul(h, 16777619); } return '#' + String(1000 + (h >>> 0) % 9000); };
+  const logoImg = new Image(); logoImg.src = 'assets/logo-192.png'; logoImg.onload = () => drawPoster();
+  const kStar = (cx, cy, r, on, col) => { kx.beginPath(); for (let i = 0; i < 10; i++){ const rr = i % 2 ? r * .45 : r, a = -Math.PI / 2 + i * Math.PI / 5; kx[i ? 'lineTo' : 'moveTo'](cx + rr * Math.cos(a), cy + rr * Math.sin(a)); } kx.closePath();
+    kx.fillStyle = on ? col : 'rgba(255,243,226,.12)'; kx.fill(); kx.lineWidth = 4; kx.lineJoin = 'round'; kx.strokeStyle = '#140a1f'; kx.stroke(); };
+  const rr = (x, y, w, h, r) => { kx.beginPath(); kx.moveTo(x + r, y); kx.arcTo(x + w, y, x + w, y + h, r); kx.arcTo(x + w, y + h, x, y + h, r); kx.arcTo(x, y + h, x, y, r); kx.arcTo(x, y, x + w, y, r); kx.closePath(); };
+  const kfit = (txt, font, maxW, size) => { do { kx.font = font.replace('{s}', size); size -= 2; } while (kx.measureText(txt).width > maxW && size > 18); };
   drawPoster = function(){
-    const ink = '#2a1a10', red = '#c0201f';
-    // paper
-    const bg = px.createRadialGradient(PW / 2, PH * .45, PW * .2, PW / 2, PH / 2, PW * .85);
-    bg.addColorStop(0, '#f3e7cf'); bg.addColorStop(1, '#cdb48a'); px.fillStyle = bg; px.fillRect(0, 0, PW, PH);
-    px.drawImage(grain, 0, 0);
-    px.lineWidth = 10; px.strokeStyle = ink; px.strokeRect(34, 34, PW - 68, PH - 68);
-    px.lineWidth = 3; px.strokeRect(52, 52, PW - 104, PH - 104);
-    px.textAlign = 'center'; px.textBaseline = 'alphabetic';
+    const C = CREWS[crewK], acc = C.col;
+    // base: night card with a sunset glow and a holographic sheen
+    const bg = kx.createLinearGradient(0, 0, KW, KH); bg.addColorStop(0, '#1b0b2e'); bg.addColorStop(.6, '#2a1145'); bg.addColorStop(1, '#3d1450');
+    kx.fillStyle = bg; kx.fillRect(0, 0, KW, KH);
+    const glow = kx.createRadialGradient(KW * .92, KH * .95, 40, KW * .92, KH * .95, KW * .6); glow.addColorStop(0, 'rgba(255,120,80,.55)'); glow.addColorStop(1, 'rgba(255,79,139,0)');
+    kx.fillStyle = glow; kx.fillRect(0, 0, KW, KH);
+    kx.save(); kx.globalAlpha = .07; kx.strokeStyle = '#fff3e2'; kx.lineWidth = 2;
+    for (let x = -KH; x < KW; x += 26){ kx.beginPath(); kx.moveTo(x, KH); kx.lineTo(x + KH, 0); kx.stroke(); } kx.restore();
+    const holo = kx.createLinearGradient(0, 0, KW, 0); ['rgba(255,79,139,.0)', 'rgba(255,79,139,.18)', 'rgba(36,212,196,.18)', 'rgba(255,207,58,.18)', 'rgba(255,207,58,0)'].forEach((c, i, a) => holo.addColorStop(i / (a.length - 1), c));
+    kx.fillStyle = holo; kx.fillRect(0, 0, KW, KH);
+    // character watermark on the right
+    if (ok(crewK)){ const im = IMG[crewK], h = KH * 1.05, w = im.naturalWidth * h / im.naturalHeight;
+      const oc = document.createElement('canvas'); oc.width = Math.ceil(w); oc.height = Math.ceil(h); const ox = oc.getContext('2d');
+      ox.drawImage(im, 0, 0, w, h); ox.globalCompositeOperation = 'destination-in';
+      const fade = ox.createLinearGradient(0, 0, w * .55, 0); fade.addColorStop(0, 'rgba(0,0,0,0)'); fade.addColorStop(1, 'rgba(0,0,0,.85)'); ox.fillStyle = fade; ox.fillRect(0, 0, w, h);
+      kx.drawImage(oc, KW - w * .82, KH * .14); }
     // header
-    fit('WANTED', '400 {s}px Bungee, Impact, "Arial Black", sans-serif', PW - 160, 210); px.fillStyle = ink; px.fillText('WANTED', PW / 2, 250);
-    px.font = '700 34px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = red;
-    px.fillText('B Y   T H E   $ M T A   C R E W', PW / 2, 306);
+    kx.fillStyle = 'rgba(14,6,24,.65)'; kx.fillRect(0, 0, KW, 120);
+    kx.fillStyle = acc; kx.fillRect(0, 118, KW, 6);
+    if (logoImg.complete && logoImg.naturalWidth) kx.drawImage(logoImg, 34, 14, 92, 92);
+    kx.textAlign = 'left'; kx.textBaseline = 'middle';
+    kx.font = '400 44px Bungee, Impact, "Arial Black", sans-serif'; kx.fillStyle = '#fff3e2'; kx.fillText('MEMES THEFT AUTO', 146, 52);
+    kx.font = '700 22px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = acc; kx.fillText('C R E W   I D   ·   S E A S O N   1', 148, 92);
+    kx.textAlign = 'right'; kx.font = '400 40px Bungee, Impact, sans-serif'; kx.fillStyle = '#ffcf3a'; kx.fillText('$MTA', KW - 40, 62);
     // photo
-    const bx = 200, by = 340, bw = 680, bh = 560;
-    px.fillStyle = '#3a2a1e'; px.fillRect(bx, by, bw, bh);
-    const src = posterImg || userImg;
-    if (src){
-      const sc = Math.max(bw / src.naturalWidth, bh / src.naturalHeight), iw = src.naturalWidth * sc, ih = src.naturalHeight * sc;
-      const dy = Math.max(0, (ih - bh) / 2) * .6;
-      px.save(); px.beginPath(); px.rect(bx, by, bw, bh); px.clip();
-      px.drawImage(src, bx + (bw - iw) / 2, by + (bh - ih) / 2 + dy, iw, ih);
-      px.globalCompositeOperation = 'multiply'; px.fillStyle = 'rgba(232,205,160,.55)'; px.fillRect(bx, by, bw, bh);
-      px.restore();
-    } else {
-      // anonymous silhouette
-      px.fillStyle = '#5a4432';
-      px.beginPath(); px.arc(PW / 2, by + 220, 105, 0, Math.PI * 2); px.fill();
-      px.beginPath(); px.ellipse(PW / 2, by + bh + 40, 250, 230, 0, Math.PI, 0); px.fill();
-      px.font = '400 150px Bungee, Impact, sans-serif'; px.fillStyle = '#efe2c8'; px.fillText('?', PW / 2, by + 275);
-    }
-    px.lineWidth = 8; px.strokeStyle = ink; px.strokeRect(bx, by, bw, bh);
-    // stamp
-    px.save(); px.translate(bx + bw - 120, by + bh - 70); px.rotate(-.2); px.globalAlpha = .88;
-    px.font = '400 44px Bungee, Impact, sans-serif'; const sw = px.measureText('CREW MEMBER').width + 50;
-    px.lineWidth = 7; px.strokeStyle = red; px.strokeRect(-sw / 2, -42, sw, 84); px.lineWidth = 2; px.strokeRect(-sw / 2 + 8, -34, sw - 16, 68);
-    px.fillStyle = red; px.textBaseline = 'middle'; px.fillText('CREW MEMBER', 0, 3); px.restore();
-    px.textBaseline = 'alphabetic';
-    // wanted level
-    for (let i = 0; i < 5; i++) pStar(PW / 2 + (i - 2) * 78, 952, 30, i < level);
-    // name
-    const nm = (nameEl.value.trim() || '@YOURNAME').toUpperCase();
-    fit(nm, '400 {s}px Bungee, Impact, "Arial Black", sans-serif', PW - 180, 112); px.fillStyle = ink; px.fillText(nm, PW / 2, 1072);
-    // charge
-    const crime = CRIMES[+crimeEl.value] || CRIMES[0];
-    px.font = '700 30px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = red; px.fillText('WANTED FOR', PW / 2, 1122);
-    fit(crime.toUpperCase(), '700 {s}px "Chakra Petch", ui-monospace, monospace', PW - 180, 44); px.fillStyle = ink; px.fillText(crime.toUpperCase(), PW / 2, 1170);
-    // bounty
-    px.font = '400 58px Bungee, Impact, sans-serif'; px.fillStyle = red;
-    fit('BOUNTY ' + bounty.toLocaleString('en-US') + ' $MTA', '400 {s}px Bungee, Impact, sans-serif', PW - 180, 60);
-    px.fillText('BOUNTY ' + bounty.toLocaleString('en-US') + ' $MTA', PW / 2, 1238);
-    px.font = '600 22px "Chakra Petch", ui-monospace, monospace'; px.fillStyle = 'rgba(42,26,16,.7)';
-    px.fillText('MEMES THEFT AUTO  ·  SOLANA  ·  ' + SITE.replace(/^https?:\/\//, '').replace(/\/$/, ''), PW / 2, 1280);
-    lvlEl.querySelectorAll('button').forEach(b => b.classList.toggle('on', +b.dataset.n <= level));
-    lvlEl.querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.n === level)));
-    const share = `I'm WANTED by the $MTA crew ${'★'.repeat(level)}\nWanted for: ${crime}\nBounty: ${bounty.toLocaleString('en-US')} $MTA\n\nMake yours: ${SITE}#wanted`;
-    document.getElementById('wp-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(share);
+    const px0 = 50, py0 = 160, pw = 300, ph = 370;
+    kx.save(); rr(px0, py0, pw, ph, 18); kx.clip();
+    kx.fillStyle = '#3a1a55'; kx.fillRect(px0, py0, pw, ph);
+    const src = idImg || userImg;
+    if (src){ const sc = Math.max(pw / src.naturalWidth, ph / src.naturalHeight), iw = src.naturalWidth * sc, ih = src.naturalHeight * sc, dy = Math.max(0, (ih - ph) / 2) * .6; kx.drawImage(src, px0 + (pw - iw) / 2, py0 + (ph - ih) / 2 + dy, iw, ih); }
+    else { kx.fillStyle = '#5a3a7a'; kx.beginPath(); kx.arc(px0 + pw / 2, py0 + 150, 72, 0, Math.PI * 2); kx.fill(); kx.beginPath(); kx.ellipse(px0 + pw / 2, py0 + ph + 30, 150, 160, 0, Math.PI, 0); kx.fill();
+      kx.textAlign = 'center'; kx.font = '400 90px Bungee, Impact, sans-serif'; kx.fillStyle = '#fff3e2'; kx.fillText('?', px0 + pw / 2, py0 + 156); }
+    kx.restore(); rr(px0, py0, pw, ph, 18); kx.lineWidth = 6; kx.strokeStyle = acc; kx.stroke();
+    // stars under the photo
+    for (let i = 0; i < 5; i++) kStar(px0 + 34 + i * 58, py0 + ph + 52, 22, i < idLevel, '#ffcf3a');
+    // fields
+    const fx = 400; kx.textAlign = 'left'; kx.textBaseline = 'alphabetic';
+    const label = (t, y) => { kx.font = '700 20px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = 'rgba(255,243,226,.6)'; kx.fillText(t, fx, y); };
+    const nm = (idName.value.trim() || '@YOURNAME').toUpperCase();
+    label('N A M E', 200); kfit(nm, '400 {s}px Bungee, Impact, "Arial Black", sans-serif', 560, 70); kx.fillStyle = '#fff3e2'; kx.fillText(nm, fx, 268);
+    label('C R E W   N O .', 330); kx.font = '700 46px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = '#ffcf3a'; kx.fillText(crewNo(idName.value.trim()), fx, 380);
+    kx.save(); kx.translate(300, 0); label('P O S I T I O N', 330); kx.restore();
+    kx.font = '700 34px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = '#fff3e2'; kx.fillText(idRole.value.toUpperCase(), fx + 300, 378);
+    label('C R E W', 450); kx.font = '700 30px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = acc; kx.fillText((C.name + "'S CREW").toUpperCase(), fx, 496);
+    kx.save(); kx.translate(300, 0); label('J O I N E D', 450); kx.restore(); kx.font = '700 34px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = '#fff3e2'; kx.fillText(joined, fx + 300, 496);
+    // barcode + footer
+    let bx = fx; const seed = crewNo(idName.value.trim()); for (let i = 0; i < 46; i++){ const w = 2 + ((seed.charCodeAt(1 + i % 4) || 7) * (i + 3)) % 5; kx.fillStyle = 'rgba(255,243,226,.85)'; kx.fillRect(bx, 545, w, 58); bx += w + 3; }
+    kx.font = '700 18px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = 'rgba(255,243,226,.55)'; kx.fillText('MTA-' + seed.slice(1) + '-' + crewK.toUpperCase(), fx, 630);
+    kx.fillStyle = 'rgba(14,6,24,.7)'; kx.fillRect(0, KH - 70, KW, 70); kx.fillStyle = acc; kx.fillRect(0, KH - 70, KW, 4);
+    kx.textAlign = 'center'; kx.textBaseline = 'middle'; kx.font = '700 24px "Chakra Petch", ui-monospace, monospace'; kx.fillStyle = '#fff3e2';
+    kx.fillText('RUGS ARE NOT ACCEPTED IN OUR CITY  ·  ' + SITE.replace(/^https?:\/\//, '').replace(/\/$/, ''), KW / 2, KH - 33);
+    idLvl.querySelectorAll('button').forEach(b => { b.classList.toggle('on', +b.dataset.n <= idLevel); b.setAttribute('aria-pressed', String(+b.dataset.n === idLevel)); });
+    const share = `Officially part of the $MTA crew ${'★'.repeat(idLevel)}\nCrew no. ${crewNo(idName.value.trim())} · ${idRole.value} · ${C.name}'s crew\n\nGet your crew ID: ${SITE}#crew-id`;
+    document.getElementById('id-share').href = 'https://x.com/intent/tweet?text=' + encodeURIComponent(share);
   };
-  nameEl.addEventListener('input', drawPoster);
-  crimeEl.addEventListener('change', drawPoster);
-  document.getElementById('wp-roll').addEventListener('click', () => { rollBounty(); let c; do { c = Math.floor(Math.random() * CRIMES.length); } while (String(c) === crimeEl.value); crimeEl.value = String(c); drawPoster(); });
-  lvlEl.addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (b){ level = +b.dataset.n; drawPoster(); } });
-  document.getElementById('wp-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
-    const im = new Image(); im.onload = () => { posterImg = im; drawPoster(); }; im.src = URL.createObjectURL(f); });
+  idName.addEventListener('input', drawPoster); idRole.addEventListener('change', drawPoster);
+  document.getElementById('id-crew').addEventListener('click', e => { const b = e.target.closest('button[data-k]'); if (!b) return; crewK = b.dataset.k;
+    document.querySelectorAll('#id-crew button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); drawPoster(); });
+  idLvl.addEventListener('click', e => { const b = e.target.closest('button[data-n]'); if (b){ idLevel = +b.dataset.n; drawPoster(); } });
+  document.getElementById('id-file').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
+    const im = new Image(); im.onload = () => { idImg = im; drawPoster(); }; im.src = URL.createObjectURL(f); });
+  ['pumpchi', 'pengie', 'talljr'].forEach(k => { if (IMG[k] && !IMG[k].complete) IMG[k].addEventListener('load', () => drawPoster()); });
   (document.fonts && document.fonts.load ? Promise.all([document.fonts.load('60px Bungee'), document.fonts.load('700 30px "Chakra Petch"')]) : Promise.resolve()).then(drawPoster, drawPoster);
   drawPoster();
   async function saveCanvas(canvas, name){
@@ -2267,9 +2274,9 @@ tickCountdown(true);
     const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
   }
-  document.getElementById('wp-save').addEventListener('click', () => {
-    drawPoster(); const slug = (nameEl.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'crew').toLowerCase();
-    saveCanvas(pc, `mta-wanted-${slug}.png`);
+  document.getElementById('id-save').addEventListener('click', () => {
+    drawPoster(); const slug = (idName.value.trim().replace(/[^a-z0-9]+/gi, '-').replace(/^-|-$/g, '') || 'crew').toLowerCase();
+    saveCanvas(kc, `mta-crew-id-${slug}.png`);
   });
   /* ---- Telegram links: on phones, open the Telegram app directly (t.me pages often stall inside the X / Telegram in-app browsers) ---- */
   const toTg = u => { const m = u.match(/^https:\/\/t\.me\/(addstickers\/)?([A-Za-z0-9_]+)\/?$/); return m ? (m[1] ? 'tg://addstickers?set=' + m[2] : 'tg://resolve?domain=' + m[2]) : null; };
