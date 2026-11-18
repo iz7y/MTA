@@ -1149,10 +1149,11 @@ const MOST_WANTED = {
   BOARD: [
     // Top 10 of the week, best first. Example: { name: '@handle', score: '$48,250', note: 'Pengie · 7 missions' },
   ],
+  // Counted automatically: 'pfp' = wanted PFPs made on the site, 'mcap' = live market cap from DexScreener once CONTRACT is set.
   GOALS: [
-    { label: 'Crew PFPs on X', now: 0, target: 100,  unlock: 'Rugsy Jack, episode 2' },
-    { label: 'Holders',        now: 0, target: 500,  unlock: 'A new crew member revealed' },
-    { label: 'Holders',        now: 0, target: 1000, unlock: 'A new level in the heist game' }
+    { label: 'Crew PFPs made', auto: 'pfp',  target: 100,     unlock: 'Rugsy Jack, episode 2' },
+    { label: 'Market cap',     auto: 'mcap', target: 250000,  unlock: 'A new crew member revealed' },
+    { label: 'Market cap',     auto: 'mcap', target: 1000000, unlock: 'A new level in the heist game' }
   ],
   HALL: [
     // Past winners, newest first. Example: { week: 'Week 1', name: '@handle', what: 'Heist of the week · $61,900' },
@@ -1402,6 +1403,7 @@ async function pullLive(){
     const px = +pr.priceUsd;
     document.getElementById('ls-price').textContent = px ? '$' + (px < .01 ? px.toPrecision(3) : px.toFixed(4)) : '—';
     document.getElementById('ls-mcap').textContent = usd(pr.marketCap ?? pr.fdv);
+    window.dispatchEvent(new CustomEvent('mta-mcap', { detail: +(pr.marketCap ?? pr.fdv) || 0 }));
     document.getElementById('ls-vol').textContent = usd(pr.volume?.h24);
     document.getElementById('ls-liq').textContent = usd(pr.liquidity?.usd);
     const ch = pr.priceChange?.h24, el = document.getElementById('ls-chg');
@@ -2196,6 +2198,7 @@ tickCountdown(true);
   stage.tabIndex = 0;
 
   document.getElementById('pfp-save').addEventListener('click', () => {
+    if (!example || example.hidden) window.dispatchEvent(new Event('mta-pfp-made'));   // count real photos only, not the example
     draw();
     cv.toBlob(async blob => {
       if (!blob) return;
@@ -2320,7 +2323,7 @@ tickCountdown(true);
     const board = document.getElementById('mw-board');
     const money = v => '$' + Math.round(v).toLocaleString('en-US');
     const CHAR_NAME = { pumpchi: 'Pumpchi', pengie: 'Pengie', talljr: 'Tall-JR' };
-    let sheetRows = [], localRows = [], live = false;
+    let sheetRows = [], localRows = [], live = false, pfpCount = 0, pfpLocal = 0, mcap = 0;
     const merged = () => {
       const best = new Map();
       for (const r of [...M.BOARD.map(b => ({ name: b.name, v: parseInt(String(b.score).replace(/[^0-9]/g, ''), 10) || 0, note: b.note || '' })), ...sheetRows, ...localRows]){
@@ -2354,6 +2357,7 @@ tickCountdown(true);
       for (const r of rows){
         if (ci.ok >= 0 && /^\s*(no|non|ban|banned|fake|cheat|false|0)\s*$/i.test(r[ci.ok] || '')) continue;   // mods hide cheated runs
         let name = (r[ci.name] || '').trim().replace(/\s+/g, ''); const v = parseInt(String(r[ci.score] || '').replace(/[^0-9]/g, ''), 10);
+        if (name.toLowerCase() === '#pfp'){ pfpCount++; continue; }
         if (!name || !v) continue; if (!name.startsWith('@')) name = '@' + name;
         out.push({ name, v, note: ci.note >= 0 ? (r[ci.note] || '').trim() : '' });
       }
@@ -2362,7 +2366,7 @@ tickCountdown(true);
     renderBoard();
     if (M.SCORES_CSV_URL){
       const load = () => fetch(M.SCORES_CSV_URL + (M.SCORES_CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
-        .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => { sheetRows = fromSheet(txt); live = true; renderBoard(); }).catch(() => {});
+        .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => { pfpCount = 0; pfpLocal = 0; sheetRows = fromSheet(txt); live = true; renderBoard(); renderGoals(); }).catch(() => {});
       load(); setInterval(load, 90000);
     }
     // the player's @ (kept on this device) + automatic posting of each new personal best
@@ -2395,12 +2399,29 @@ tickCountdown(true);
         <div class="rotation" aria-label="Challenge rotation">${M.ROTATION.map(r => `<span class="${r === C.title ? 'on' : ''}">${esc(r)}</span>`).join('')}</div>`;
     };
     renderChal(); setInterval(renderChal, 60000);
-    document.getElementById('mw-goals').innerHTML = M.GOALS.map(g => {
-      const p = Math.max(0, Math.min(100, g.now / g.target * 100)), done = g.now >= g.target;
-      return `<li class="${done ? 'done' : ''}"><div class="row"><b>${esc(g.label)}</b><span>${g.now.toLocaleString('en-US')} / ${g.target.toLocaleString('en-US')}</span></div>
-        <div class="track" role="progressbar" aria-label="${esc(g.label)}" aria-valuemin="0" aria-valuemax="${g.target}" aria-valuenow="${g.now}"><i style="--p:${p}%"></i></div>
-        <span class="unl">${done ? '✓ Unlocked: ' : '🔒 Unlocks: '}${esc(g.unlock)}</span></li>`;
-    }).join('');
+    const short = n => n >= 1e6 ? '$' + (n / 1e6).toFixed(n % 1e6 ? 1 : 0) + 'M' : n >= 1e3 ? '$' + Math.round(n / 1e3) + 'K' : '$' + Math.round(n);
+    var renderGoals = () => {
+      document.getElementById('mw-goals').innerHTML = M.GOALS.map(g => {
+        const now = g.auto === 'pfp' ? pfpCount + pfpLocal : g.auto === 'mcap' ? mcap : (g.now || 0);
+        const p = Math.max(0, Math.min(100, now / g.target * 100)), done = now >= g.target;
+        const val = g.auto === 'mcap' ? (CONTRACT ? `${short(now)} / ${short(g.target)}` : `Live at launch · ${short(g.target)}`) : `${now.toLocaleString('en-US')} / ${g.target.toLocaleString('en-US')}`;
+        return `<li class="${done ? 'done' : ''}"><div class="row"><b>${esc(g.label)}</b><span>${val}</span></div>
+          <div class="track" role="progressbar" aria-label="${esc(g.label)}" aria-valuemin="0" aria-valuemax="${g.target}" aria-valuenow="${Math.round(now)}"><i style="--p:${p}%"></i></div>
+          <span class="unl">${done ? '✓ Unlocked: ' : '🔒 Unlocks: '}${esc(g.unlock)}</span></li>`;
+      }).join('');
+    };
+    renderGoals();
+    window.addEventListener('mta-mcap', e => { mcap = e.detail; renderGoals(); });
+    // count each device's first wanted PFP once, through the same invisible form as the scores
+    window.addEventListener('mta-pfp-made', () => {
+      let done = false; try { done = !!localStorage.getItem('mta-pfp-counted'); } catch (e) {}
+      if (done) return;
+      pfpLocal = 1; renderGoals();
+      const A = M.AUTO_SUBMIT || {}, action = (M.SCORE_FORM_URL || '').replace(/\/viewform.*$/, '/formResponse');
+      if (!(A.name && A.score && action.includes('/formResponse'))) return;
+      const body = new URLSearchParams(); body.set(A.name, '#pfp'); body.set(A.score, '1'); if (A.character) body.set(A.character, 'Pumpchi'); if (A.proof) body.set(A.proof, 'pfp made on the site');
+      fetch(action, { method: 'POST', mode: 'no-cors', body }).then(() => { try { localStorage.setItem('mta-pfp-counted', '1'); } catch (e) {} }).catch(() => {});
+    });
     if (M.HALL.length){
       document.getElementById('mw-hall-wrap').hidden = false;
       document.getElementById('mw-hall').innerHTML = M.HALL.map(h => `<div><small>${esc(h.week)}</small><b>${esc(h.name)}</b><span>${esc(h.what)}</span></div>`).join('');
