@@ -135,6 +135,7 @@ p{margin:0}
 .board-list .sc{font:700 1rem var(--f-hud);color:var(--gold);font-variant-numeric:tabular-nums;white-space:nowrap}
 .board-list li.top{border-color:var(--gold);background:linear-gradient(90deg,rgba(255,207,58,.16),rgba(20,10,31,.5) 60%)}
 .board-list li.top .rk{color:var(--gold)}
+.board-list li.mine{box-shadow:inset 3px 0 0 var(--tide)}
 .board-empty{display:grid;gap:14px;justify-items:start;padding:22px;border:1px dashed var(--dusk-2);border-radius:12px;background:rgba(20,10,31,.4)}
 .board-empty p{color:var(--muted);max-width:46ch}
 .board-empty .ghost-rows{display:grid;gap:8px;width:100%}
@@ -362,6 +363,9 @@ section.block{position:relative;padding-block:clamp(64px,9vw,120px);isolation:is
 .touch-pad button{flex:1;height:54px;border-radius:var(--radius);border:2px solid var(--dusk-2);background:var(--night);color:var(--paper);font:400 1rem var(--f-display);touch-action:manipulation}
 .touch-pad button:active{border-color:var(--gold);background:#2b1838}
 @media (pointer:coarse){.touch-pad{display:flex}}
+.handle-row{display:grid;gap:8px;padding:14px 16px;border:1px solid var(--dusk-2);border-radius:10px;background:rgba(20,10,31,.5)}
+.handle-row input{flex:1;min-width:0;font:600 1rem var(--f-hud);color:var(--paper);background:rgba(20,10,31,.7);border:1px solid var(--dusk-2);border-radius:var(--radius);padding:10px 12px}
+.handle-row input:focus{border-color:var(--gold);outline:none;box-shadow:0 0 0 3px rgba(255,207,58,.25)}
 .game-help{font:500 .85rem var(--f-hud);color:var(--muted);letter-spacing:.04em}
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
 .board div{background:var(--night);border:1px solid var(--dusk-2);border-radius:var(--radius);padding:8px 12px;font:600 .8rem var(--f-hud);display:flex;justify-content:space-between;gap:8px;color:var(--muted)}
@@ -1026,7 +1030,7 @@ footer .wrap{display:grid;gap:22px}
       </div>
       <div class="mw-grid">
         <div class="panel rv">
-          <div class="panel-head"><div><h3>The board</h3><p id="mw-board-sub">This week's top 10. A score shows here as soon as a mod checks the proof.</p></div><a class="btn btn-gold btn-sm" id="mw-submit" href="#most-wanted">Submit your score</a></div>
+          <div class="panel-head"><div><h3>The board</h3><p id="mw-board-sub">This week's top 10. Put your @ under the game: every new personal best lands here on its own.</p></div><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a></div>
           <div id="mw-board"></div>
         </div>
         <div class="mw-side">
@@ -1071,6 +1075,11 @@ footer .wrap{display:grid;gap:22px}
         <div class="touch-pad">
           <button type="button" id="btn-slide" data-i18n="g.slide">Slide</button>
           <button type="button" id="btn-jump" data-i18n="g.jump">Jump</button>
+        </div>
+        <div class="handle-row">
+          <label class="ctrl-label" for="mw-handle" style="margin:0">Your @ for the Most Wanted board</label>
+          <div class="field-row"><input type="text" id="mw-handle" maxlength="24" placeholder="@yourname" autocomplete="off" spellcheck="false"><a class="btn btn-ghost btn-sm" href="#most-wanted">See the board</a></div>
+          <p class="fine" id="mw-handle-status">Set your @ and every new personal best goes on the board automatically.</p>
         </div>
         <p class="game-help" data-i18n="g.help">Space or ↑ to jump, ↓ to slide, Esc to pause. On mobile: tap to jump, swipe down to slide under the choppers.</p>
         <div>
@@ -1124,7 +1133,10 @@ const MOST_WANTED = {
   // Live board: the Google Sheet of the score form, published as CSV (File > Share > Publish to web > CSV).
   // Rows show on the board as soon as a mod types 'yes' in the 'Approved' column. Leave '' to use BOARD below.
   SCORES_CSV_URL: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVqTCjXJ-yzYiIGEiEvukOd9lntpAUvL6vnXdjorX7JrjfEVTnqvC3Sh3iZxPqJTJdjJpM50QBX6kN/pub?gid=859703821&single=true&output=csv',
-  SCORE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfYo_Na8nXf4n54gPfcPXU_QaN7tJvRy6Yj2FJvUWsAgpD_AQ/viewform',   // the Google Form where players submit their score + proof link
+  SCORE_FORM_URL: 'https://docs.google.com/forms/d/e/1FAIpQLSfYo_Na8nXf4n54gPfcPXU_QaN7tJvRy6Yj2FJvUWsAgpD_AQ/viewform',
+  // The game posts each new personal best to the form automatically. Field ids come from the form's pre-filled link (entry.NNNN).
+  AUTO_SUBMIT: { name: '', score: '', character: '', proof: '' },
+  // In the sheet, type 'no' in the Approved column to remove a cheated score from the board.   // the Google Form where players submit their score + proof link
   CHALLENGE: {
     title: 'Heist of the week',
     what: 'Highest score in the heist game below.',
@@ -1809,6 +1821,7 @@ function bust(){
   state = 'dying'; G.dead = 0; G.shake = 1; G.flash = .8; G.flashCol = '255,59,78'; SFX.crash();
   burst(W * .17, G.py - G.ph * .5, 30, ['255,59,78','59,123,255','255,255,255'], H * 1.3);
   const score = Math.floor(G.loot);
+  if (Game.onRun) Game.onRun({ score, char: charKey, t: G.t, dist: G.dist, missions: G.misDone, combo: G.bestCombo });
   if (score > best()){ G.newBest = true; if (score > 0) setTimeout(() => missionPassed(t('mp.record') + ' · ' + money(score)), 900); }
   if (score > 0){ board.push({s:score, c:charKey}); board.sort((a, b) => b.s - a.s); board = board.slice(0, 5); try { localStorage.setItem('mta-board', JSON.stringify(board)); } catch (e) {} renderBoard(); }
   if (score > 0){ lastRun = {s:score, c:charKey, st:G.stars}; updateShare(); shareBtn.classList.remove('pop'); void shareBtn.offsetWidth; shareBtn.classList.add('pop'); }
@@ -2305,17 +2318,25 @@ tickCountdown(true);
     const tg = CONFIG.TG_URL || '#crew';
     const rankStars = i => i === 0 ? '★★★★★ Most wanted' : i < 3 ? '★★★★' : i < 6 ? '★★★' : '★★';
     const board = document.getElementById('mw-board');
-    const submitUrl = M.SCORE_FORM_URL || tg;
-    const sub = document.getElementById('mw-submit'); sub.href = submitUrl; if (/^https?:/.test(submitUrl)){ sub.target = '_blank'; sub.rel = 'noopener'; }
     const money = v => '$' + Math.round(v).toLocaleString('en-US');
-    const renderBoard = (rows, live) => {
+    const CHAR_NAME = { pumpchi: 'Pumpchi', pengie: 'Pengie', talljr: 'Tall-JR' };
+    let sheetRows = [], localRows = [], live = false;
+    const merged = () => {
+      const best = new Map();
+      for (const r of [...M.BOARD.map(b => ({ name: b.name, v: parseInt(String(b.score).replace(/[^0-9]/g, ''), 10) || 0, note: b.note || '' })), ...sheetRows, ...localRows]){
+        const k = r.name.toLowerCase().replace(/^@/, ''); if (!best.has(k) || best.get(k).v < r.v) best.set(k, r);
+      }
+      return [...best.values()].sort((a, b) => b.v - a.v);
+    };
+    const renderBoard = () => {
+      const rows = merged();
       if (rows.length){
-        board.innerHTML = `<ol class="board-list">${rows.slice(0, 10).map((r, i) => `<li class="${i === 0 ? 'top' : ''}"><span class="rk">${i + 1}</span><span class="who"><b>${esc(r.name)}</b><small>${rankStars(i)}${r.note ? ' · ' + esc(r.note) : ''}</small></span><span class="sc">${esc(r.score)}</span></li>`).join('')}</ol>`
-          + (live ? `<p class="fine" style="margin-top:12px">Live from the crew sheet · updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}</p>` : '');
+        board.innerHTML = `<ol class="board-list">${rows.slice(0, 10).map((r, i) => `<li class="${i === 0 ? 'top' : ''}${r.mine ? ' mine' : ''}"><span class="rk">${i + 1}</span><span class="who"><b>${esc(r.name)}</b><small>${rankStars(i)}${r.note ? ' · ' + esc(r.note) : ''}</small></span><span class="sc">${money(r.v)}</span></li>`).join('')}</ol>`
+          + (live ? `<p class="fine" style="margin-top:12px">Live · updated ${new Date().toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})}. New scores can take a few minutes to show for everyone.</p>` : '');
       } else {
         board.innerHTML = `<div class="board-empty"><div class="ghost-rows" aria-hidden="true"><span></span><span></span><span></span></div>
-          <p>No approved score yet. Play the heist, record your run and submit it: once a mod checks it, you're on the board.</p>
-          <div class="studio-actions"><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a><a class="btn btn-ghost btn-sm" href="${esc(submitUrl)}" target="_blank" rel="noopener">Submit your score</a></div></div>`;
+          <p>No score on the board yet. Put your @ under the game and play: your best run shows up here.</p>
+          <div class="studio-actions"><a class="btn btn-gold btn-sm" href="#jeu">Play the heist</a></div></div>`;
       }
     };
     // minimal CSV parser (quoted fields, commas, newlines)
@@ -2327,24 +2348,43 @@ tickCountdown(true);
     const fromSheet = txt => {
       const [head, ...rows] = parseCSV(txt); if (!head) return [];
       const col = re => head.findIndex(h => re.test(h));
-      const ci = { name: col(/@|handle|name|pseudo/i), score: col(/score/i), ok: col(/approv|valid|ok\b|check/i), note: col(/character|perso|crew|robber/i) };
+      const ci = { name: col(/@|handle|name|pseudo/i), score: col(/score/i), ok: col(/approv|valid|ban|check/i), note: col(/character|perso|crew|robber/i) };
       if (ci.name < 0 || ci.score < 0) return [];
-      const best = new Map();
+      const out = [];
       for (const r of rows){
-        if (ci.ok < 0 || !/^\s*(yes|oui|ok|y|x|✓|✅|true|1)\s*$/i.test(r[ci.ok] || '')) continue;   // mods approve each row
-        const name = (r[ci.name] || '').trim(), score = parseInt(String(r[ci.score] || '').replace(/[^0-9]/g, ''), 10);
-        if (!name || !score) continue;
-        const key = name.toLowerCase().replace(/^@/, '');
-        if (!best.has(key) || best.get(key).v < score) best.set(key, { name: name.startsWith('@') ? name : '@' + name, v: score, note: ci.note >= 0 ? (r[ci.note] || '').trim() : '' });
+        if (ci.ok >= 0 && /^\s*(no|non|ban|banned|fake|cheat|false|0)\s*$/i.test(r[ci.ok] || '')) continue;   // mods hide cheated runs
+        let name = (r[ci.name] || '').trim().replace(/\s+/g, ''); const v = parseInt(String(r[ci.score] || '').replace(/[^0-9]/g, ''), 10);
+        if (!name || !v) continue; if (!name.startsWith('@')) name = '@' + name;
+        out.push({ name, v, note: ci.note >= 0 ? (r[ci.note] || '').trim() : '' });
       }
-      return [...best.values()].sort((a, b) => b.v - a.v).map(r => ({ name: r.name, score: money(r.v), note: r.note }));
+      return out;
     };
-    renderBoard(M.BOARD, false);
+    renderBoard();
     if (M.SCORES_CSV_URL){
       const load = () => fetch(M.SCORES_CSV_URL + (M.SCORES_CSV_URL.includes('?') ? '&' : '?') + 't=' + Date.now(), { cache: 'no-store' })
-        .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => renderBoard(fromSheet(txt), true)).catch(() => {});
-      load(); setInterval(load, 120000);
+        .then(r => r.ok ? r.text() : Promise.reject(r.status)).then(txt => { sheetRows = fromSheet(txt); live = true; renderBoard(); }).catch(() => {});
+      load(); setInterval(load, 90000);
     }
+    // the player's @ (kept on this device) + automatic posting of each new personal best
+    const hIn = document.getElementById('mw-handle'), hSt = document.getElementById('mw-handle-status');
+    const clean = v => { v = v.trim().replace(/\s+/g, '').replace(/[^@\w.]/g, ''); return v && !v.startsWith('@') ? '@' + v : v; };
+    try { hIn.value = localStorage.getItem('mta-handle') || ''; } catch (e) {}
+    hIn.addEventListener('change', () => { hIn.value = clean(hIn.value); try { localStorage.setItem('mta-handle', hIn.value); } catch (e) {} hSt.textContent = hIn.value ? `Saved. Your next personal best goes on the board as ${hIn.value}.` : 'Set your @ and every new personal best goes on the board automatically.'; });
+    const A = M.AUTO_SUBMIT || {}, formAction = (M.SCORE_FORM_URL || '').replace(/\/viewform.*$/, '/formResponse');
+    const canPost = A.name && A.score && formAction.includes('/formResponse');
+    Game.onRun = run => {
+      const h = clean(hIn.value || ''); if (!h || run.score <= 0) { if (run.score > 0 && !h) hSt.textContent = 'Nice run! Add your @ above the controls to put scores like this on the board.'; return; }
+      let sent = 0; try { sent = +(localStorage.getItem('mta-sent:' + h.toLowerCase()) || 0); } catch (e) {}
+      if (run.score <= sent) return;
+      localRows = localRows.filter(r => r.name.toLowerCase() !== h.toLowerCase()).concat({ name: h, v: run.score, note: CHAR_NAME[run.char], mine: true }); renderBoard();
+      if (!canPost) { hSt.textContent = 'Board sync is being switched on. Your best is saved on this device.'; return; }
+      const proof = `auto run · ${Math.round(run.t)}s · ${Math.round(run.dist)} m · ${run.missions} missions · combo x${run.combo}`;
+      const body = new URLSearchParams(); body.set(A.name, h); body.set(A.score, String(run.score)); if (A.character) body.set(A.character, CHAR_NAME[run.char]); if (A.proof) body.set(A.proof, proof);
+      fetch(formAction, { method: 'POST', mode: 'no-cors', body }).then(() => {
+        try { localStorage.setItem('mta-sent:' + h.toLowerCase(), String(run.score)); } catch (e) {}
+        hSt.textContent = `New personal best sent to the board: ${money(run.score)} as ${h}.`;
+      }).catch(() => { hSt.textContent = "Couldn't reach the board right now. Your next run will try again."; });
+    };
     const C = M.CHALLENGE, chal = document.getElementById('mw-chal');
     const fmtLeft = ms => { const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4); return d > 0 ? `${d}d ${h}h left` : h > 0 ? `${h}h ${m}m left` : `${m}m left`; };
     const renderChal = () => {
