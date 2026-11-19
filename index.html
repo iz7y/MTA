@@ -1214,7 +1214,7 @@ document.documentElement.classList.add('js');
    LAUNCH DAY: fill these in and republish. Everything else updates itself.
    ===================================================================== */
 const CONFIG = {
-  CONTRACT: 'HfGxaLdsbaveQay7f3uTDKzNX3iqezyKEYZ85Medpump',                               // token mint address
+  CONTRACT: '',                               // token mint address
   X_URL: 'https://x.com/SolanaMta',                                  // e.g. https://x.com/memestheftauto
   TG_URL: 'https://t.me/mtagta6',                                 // e.g. https://t.me/memestheftauto
   SITE_URL: 'https://iz7y.github.io/MTA/',                               // public address of the site once hosted
@@ -1549,7 +1549,9 @@ function tickCountdown(silent){
   const m = Math.floor(diff / 6e4); diff -= m * 6e4;
   const s = Math.floor(diff / 1e3);
   [d, h, m, s].forEach((v, i) => { const el = cdEls[i], txt = pad(v); if (el.textContent !== txt){ el.textContent = txt; if (!silent && !reduce){ el.classList.remove('tick'); void el.offsetWidth; el.classList.add('tick'); } } });
-  document.getElementById('cd-note').textContent = now >= LAUNCH ? t('cd.live') : t('cd.note');
+  const pending = now >= LAUNCH && !CONTRACT;   // launch time passed but no contract yet: relaunch coming
+  if (pending) cdEls.forEach(el => { el.textContent = '--'; });
+  document.getElementById('cd-note').textContent = pending ? 'New launch time coming soon. Watch our X and Telegram.' : now >= LAUNCH ? t('cd.live') : t('cd.note');
   const p = Math.min(100, Math.max(1, ((now - START) / (LAUNCH - START)) * 100));
   document.getElementById('bar-fill').style.setProperty('--p', p.toFixed(1) + '%');
   document.getElementById('bar-pct').textContent = Math.floor(p) + '%';
